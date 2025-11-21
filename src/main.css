@@ -222,7 +222,7 @@ body {
   transform: scale(1.05);
   box-shadow: 0px 0.7rem rgba(0, 0, 0, 0.5);
 }
-.question-item--hidden {
+.question-item--last-completed {
   animation: hidden-question-item 0.5s forwards;
   user-select: none;
 }
@@ -244,12 +244,15 @@ body {
 }
 
 /* HUY 22/11/25 STYLES */
-.screen {
+.screen, #true-answer {
   display: none; 
   animation: fadeIn 0.3s ease;
 }
+.question-item--completed{
+  transform: scale(0);
+}
 
-.screen.active {
+.screen.active, #true-answer.active {
   display: block;
 }
 

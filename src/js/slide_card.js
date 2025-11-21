@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function renderCards() {
-        const slideContainer = document.querySelector('.card-slide-container');
-        if (!slideContainer) return;
+        const listSlideCards = document.querySelector('#list-slide-cards');
+        if (!listSlideCards) return;
         const cardContainer = document.createElement('div');
         cardContainer.classList.add('card-container');
         cardsData.forEach(card => {
@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             cardContainer.appendChild(img);
         });
-        slideContainer.innerHTML = ''; 
-        slideContainer.appendChild(cardContainer);
+        listSlideCards.innerHTML = ''; 
+        listSlideCards.appendChild(cardContainer);
     }
     renderCards();
 });
