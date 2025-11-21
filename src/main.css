@@ -194,3 +194,25 @@ body {
     transform: rotateY(0deg);
   }
 }
+/* QUESTIONS MENU STYLES */
+.question-container {
+  width: 90%;
+  height: 70%;
+  margin: 0px auto;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  overflow: auto;
+}
+.question-card { 
+  height: 7rem;
+  align-self: center;
+  background-color: #333;
+  border: #000 0.3rem solid;
+  border-radius: 1rem;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0px 0.5rem rgba(0, 0, 0, 0.3);
+}
