@@ -3,13 +3,13 @@
   margin: 0;
   padding: 0;
   font-size: 16px;
-  font-family: "Bangers", "Comic Neue", cursive, sans-serif;
+  font-family: "Comic Neue", cursive, sans-serif;
 }
 
 /* BASE */
 body {
   overflow: hidden;
-  background: url("./assets/game_background.png") center/cover no-repeat;
+  background: url("../assets/game_background.png") center/cover no-repeat;
 }
 
 #game-canvas {
