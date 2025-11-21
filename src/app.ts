@@ -1,4 +1,5 @@
 import DeckManager from './deck-manager.js';
+// const game =new GameManager();
 const deck = new DeckManager();
 
 console.log(`Bộ bài mới được tạo có ${deck.size} thẻ bài!`);
@@ -12,7 +13,7 @@ while (!deck.isEmpty) {
     break;
   }
 
-  if (card.isBomb) {
+  if (deck.type == "Common" && card.isBomb) {
     console.log(`BOOM!!! ${card.name} — Bạn bị nổ banh chành!`);
     break;
   } else {

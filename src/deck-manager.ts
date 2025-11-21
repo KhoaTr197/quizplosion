@@ -1,63 +1,31 @@
-/**
- * Các loại thẻ bài trong trò chơi
- * Lấy cảm hứng từ Exploding Kittens – có thẻ cộng điểm và thẻ nổ
- */
-export enum CardType {
-  PLUS_1 = "plus_1",
-  PLUS_2 = "plus_2",
-  PLUS_3 = "plus_3",
-  PLUS_4 = "plus_4",
-  PLUS_5 = "plus_5",
-  MULTIPLE = "multiple",
-  DIVIDE = "divide",
-  CHANGE = "change",
-  LOSE_ALL = "lose_all",
-  BOMB = "bomb",
-  NUCLEAR = "nuclear",
-}
+import {
+  BaseCard,
+  CommonPointCardType,
+  CommonSpecialCardType,
+  COMMON_POINT_CARD_INFO,
+  COMMON_SPECIAL_CARD_INFO,
+} from "cards";
+import{
+  randomRareCard
+}from "random"
 
 /**
- * Interface của một thẻ bài
+ * Interface của một thẻ bài trong bộ bài
  */
-export interface Card {
-  /** ID duy nhất của thẻ bài */
-  id: string;
-  /** Loại bài – quyết định hiệu ứng/chức năng */
-  type: CardType;
-  /** Tên hiển thị trên lá bài (ví dụ: "+3", "Bomb", "×2") */
-  name: string;
-  /** Có phải là thẻ bài gây nổ không? */
-  isBomb: boolean;
-}
+export interface DeckCard extends BaseCard {}
 
-/**
- * Thông tin của từng loại thẻ – dùng để tạo bài mới
- * Chỉ chứa name và isBomb
- */
-const CARD_INFO: Record<CardType, Pick<Card, "name" | "isBomb">> = {
-  plus_1: { name: "+1", isBomb: false },
-  plus_2: { name: "+2", isBomb: false },
-  plus_3: { name: "+3", isBomb: false },
-  plus_4: { name: "+4", isBomb: false },
-  plus_5: { name: "+5", isBomb: false },
-  multiple: { name: "×2", isBomb: false },
-  divide: { name: "÷2", isBomb: false },
-  change: { name: "Swap", isBomb: false },
-  lose_all: { name: "Lose All", isBomb: true },
-  bomb: { name: "Bomb", isBomb: true },
-  nuclear: { name: "NUCLEAR", isBomb: true },
-};
-
+export type DeckType = "Common" | "Rare";
 /**
  * Quản lý bộ bài (deck) trong trò chơi
  * - Tạo bộ bài ngẫu nhiên mỗi ván
  * - Rút bài, xào bài
  */
 class DeckManager {
+  private deckType: DeckType = "Common";
   /** Bộ bài đang chờ rút */
-  private deck: Card[] = [];
+  private deck: DeckCard[] = [];
   /** Chỗ chứa các thẻ bài đã bỏ */
-  private discardPile: Card[] = [];
+  private discardPile: DeckCard[] = [];
 
   constructor() {
     this.reset();
@@ -75,28 +43,46 @@ class DeckManager {
    * Mỗi lá được chọn ngẫu nhiên từ tất cả các loại thẻ
    */
   private initializeDeck(): void {
+    // Reset deck
     this.deck = [];
     this.discardPile = [];
+    // TODO: Thêm thuật toán random loại deck
+    
+    this.deckType = "Common";
 
-    const size = Math.floor(Math.random() * 4) + 5; // 5 to 8
-    const types: CardType[] = Object.keys(CARD_INFO) as CardType[];
+    // Generate bộ bài theo loại
+    if (this.deckType == "Common") {
+    const deckSize = Math.floor(Math.random() * 1) + 8; // 1 to 9
+    const pointTypes: CommonPointCardType[] = Object.keys(COMMON_POINT_CARD_INFO) as CommonPointCardType[];
+    const specialTypes: CommonSpecialCardType[] = Object.keys(COMMON_SPECIAL_CARD_INFO) as CommonSpecialCardType[];
 
-    for (let i = 0; i < size; i++) {
-      const type = types[Math.floor(Math.random() * types.length)]!;
-      const info = CARD_INFO[type];
+    // Random thẻ điểm
+    for (let i = 0; i < deckSize; i++) {
+      const cardType = pointTypes[Math.floor(Math.random() * pointTypes.length)]!;
+      const cardInfo = COMMON_POINT_CARD_INFO[cardType];
       this.deck.push({
-        id: `${type}_${Date.now()}_${i}`,
-        type,
-        name: info.name,
-        isBomb: info.isBomb,
+        id: `${cardType}_${Date.now()}_${i}`,
+        type: cardType,
+        name: cardInfo.name,
+        isBomb: cardInfo.isBomb,
       });
+    }
+    // Chèn thẻ bomb vào cuối
+    const bombType = specialTypes[Math.floor(Math.random() * specialTypes.length)]!;
+    const bombInfo = COMMON_SPECIAL_CARD_INFO[bombType];
+    this.deck.push({
+      id: `${bombType}_${Date.now()}_${deckSize}`,
+     type: bombType,
+      name: bombInfo.name,
+      isBomb: bombInfo.isBomb,
+    })
     }
   }
   /**
    * Rút 1 lá bài từ trên cùng
    * @returns Lá bài rút được hoặc null nếu thực sự hết bài
    */
-  public draw(): Card | null {
+  public draw(): DeckCard | null {
     if (this.deck.length === 0)
       return null;
     return this.deck.shift()!;
@@ -105,7 +91,7 @@ class DeckManager {
    * Bỏ 1 lá bài vào discard pile (hiện tại chưa dùng trong demo đơn giản)
    * @param card Lá bài cần bỏ
    */
-  private discard(card: Card): void {
+  private discard(card: DeckCard): void {
     this.discardPile.push(card);
   }
   /**
@@ -116,6 +102,9 @@ class DeckManager {
       const j = Math.floor(Math.random() * (i + 1));
       [this.deck[i]!, this.deck[j]!] = [this.deck[j]!, this.deck[i]!];
     }
+  }
+  public get type(): DeckType {
+    return this.deckType;
   }
   /** Số lá bài còn lại trong deck */
   public get size(): number {
@@ -129,7 +118,7 @@ class DeckManager {
    * Xem trước lá bài trên cùng mà không rút
    * @returns Lá bài trên cùng hoặc null
    */
-  public peek(): Card | null {
+  public peek(): DeckCard | null {
     return this.deck[0] || null;
   }
 }
