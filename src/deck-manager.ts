@@ -4,15 +4,12 @@ import {
   CommonSpecialCardType,
   COMMON_POINT_CARD_INFO,
   COMMON_SPECIAL_CARD_INFO,
-} from "cards";
-import{
-  randomRareCard
-}from "random"
+} from "./cards.js";
 
 /**
  * Interface của một thẻ bài trong bộ bài
  */
-export interface DeckCard extends BaseCard {}
+export interface DeckCard extends BaseCard { }
 
 export type DeckType = "Common" | "Rare";
 /**
@@ -36,7 +33,6 @@ class DeckManager {
    */
   public reset(): void {
     this.initializeDeck();
-    this.shuffle();
   }
   /**
    * Tạo bộ bài mới với số lượng ngẫu nhiên từ 5 đến 8 lá
@@ -46,37 +42,81 @@ class DeckManager {
     // Reset deck
     this.deck = [];
     this.discardPile = [];
+
     // TODO: Thêm thuật toán random loại deck
-    
     this.deckType = "Common";
 
     // Generate bộ bài theo loại
     if (this.deckType == "Common") {
-    const deckSize = Math.floor(Math.random() * 1) + 8; // 1 to 9
-    const pointTypes: CommonPointCardType[] = Object.keys(COMMON_POINT_CARD_INFO) as CommonPointCardType[];
-    const specialTypes: CommonSpecialCardType[] = Object.keys(COMMON_SPECIAL_CARD_INFO) as CommonSpecialCardType[];
+      // Kích thước bộ bài: 1 → 8 lá điểm + 1 lá đặc biệt + 1 bomb/nuclear → tổng 3 → 10 lá
+      const deckSize = Math.floor(Math.random() * 8) + 2;
 
-    // Random thẻ điểm
-    for (let i = 0; i < deckSize; i++) {
-      const cardType = pointTypes[Math.floor(Math.random() * pointTypes.length)]!;
-      const cardInfo = COMMON_POINT_CARD_INFO[cardType];
+      // Thêm các lá điểm theo trọng số
+      for (let i = 0; i < deckSize - 1; i++) {
+        const pointType = this.randomPointCard();
+        const info = COMMON_POINT_CARD_INFO[pointType];
+        this.deck.push({
+          id: `${pointType}_${Date.now()}_${i}`,
+          type: pointType,
+          name: info.name,
+          isBomb: false,
+        });
+      }
+
+      // Xào tạm các lá điểm trước khi chèn lá đặc biệt
+      this.shuffle();
+
+      // Chèn ngẫu nhiên 1 lá chức năng ×2 hoặc ÷2
+      const specialType: CommonSpecialCardType =
+        Math.random() > 0.5 ?
+          CommonSpecialCardType.MULTIPLE :
+          CommonSpecialCardType.DIVIDE;
+      const specialInfo = COMMON_SPECIAL_CARD_INFO[specialType];
+      const insertPos = Math.floor(Math.random() * (this.deck.length)) + 1;
+      console.log(insertPos);
+      this.deck.splice(insertPos, 0, {
+        id: `${specialType}_${Date.now()}_special`,
+        type: specialType,
+        name: specialInfo.name,
+        isBomb: false,
+      });
+
+      // Thêm lá bomb/nuclear vào cuối cùng
+      const bombType: CommonSpecialCardType =
+        Math.random() > 0.25 ?
+          CommonSpecialCardType.BOMB :
+          CommonSpecialCardType.NUCLEAR;
+      const bombInfo = COMMON_SPECIAL_CARD_INFO[bombType];
       this.deck.push({
-        id: `${cardType}_${Date.now()}_${i}`,
-        type: cardType,
-        name: cardInfo.name,
-        isBomb: cardInfo.isBomb,
+        id: `${bombType}_${Date.now()}_bomb`,
+        type: bombType,
+        name: bombInfo.name,
+        isBomb: true,
       });
     }
-    // Chèn thẻ bomb vào cuối
-    const bombType = specialTypes[Math.floor(Math.random() * specialTypes.length)]!;
-    const bombInfo = COMMON_SPECIAL_CARD_INFO[bombType];
-    this.deck.push({
-      id: `${bombType}_${Date.now()}_${deckSize}`,
-     type: bombType,
-      name: bombInfo.name,
-      isBomb: bombInfo.isBomb,
-    })
+  }
+  /**
+   * Chọn ngẫu nhiên một lá điểm theo tỷ lệ trọng số
+   * - +1: 30%   | +2: 35%   | +3: 22%   | +4: 12%   | +5: 6%
+   * @returns {CommonPointCardType} Loại thẻ bài
+   * @private
+   */
+  private randomPointCard(): CommonPointCardType {
+    const weights = [30, 35, 22, 12, 6];
+    const types: CommonPointCardType[] = [
+      CommonPointCardType.PLUS_1,
+      CommonPointCardType.PLUS_2,
+      CommonPointCardType.PLUS_3,
+      CommonPointCardType.PLUS_4,
+      CommonPointCardType.PLUS_5,
+    ];
+    const total = weights.reduce((s, w) => s + w, 0);
+    let rand = Math.random() * total;
+    for (let i = 0; i < weights.length; i++) {
+      if (rand < weights[i]) return types[i];
+      rand -= weights[i];
     }
+    return CommonPointCardType.PLUS_1;
   }
   /**
    * Rút 1 lá bài từ trên cùng
@@ -95,7 +135,7 @@ class DeckManager {
     this.discardPile.push(card);
   }
   /**
-   * Xào bộ bài hiện tại (sử dụng thuật toán Fisher-Yates)
+   * Xào bộ bài hiện tại (trừ lá cuối là bomb) (sử dụng thuật toán Fisher-Yates)
    */
   private shuffle(): void {
     for (let i = this.deck.length - 1; i > 0; i--) {
@@ -114,12 +154,14 @@ class DeckManager {
   public get isEmpty(): boolean {
     return this.deck.length === 0;
   }
-  /**
-   * Xem trước lá bài trên cùng mà không rút
-   * @returns Lá bài trên cùng hoặc null
-   */
-  public peek(): DeckCard | null {
-    return this.deck[0] || null;
+  /** Debug: In ra bộ bài vừa tạo */
+  public logCurrentDeck(): void {
+    console.log(`%c Bộ bài mới (${this.deck.length} lá):`, "font-weight: bold");
+    console.log(this.deck);
+    this.deck.forEach((card, i) => {
+      const color = card.isBomb ? "#ff0000" : "#00ff00";
+      console.log(`%c ${i + 1}. ${card.name} ${card.isBomb ? "BOOM" : ""}`, `color: ${color}`);
+    });
   }
 }
 

@@ -82,6 +82,15 @@ npm run build
 # 4. Mở file index.html bằng Live Server
 #    Cách nhanh nhất trong VS Code:
 #    → Chuột phải vào file index.html → "Open with Live Server"
+
+hoặc
+
+# 3. Auto Build TypeScript khi Developing → JavaScript
+npm run watch
+
+# 4. Mở file index.html bằng Live Server
+#    Cách nhanh nhất trong VS Code:
+#    → Chuột phải vào file index.html → "Open with Live Server"
 ```
 
 ### Cấu trúc thư mục
