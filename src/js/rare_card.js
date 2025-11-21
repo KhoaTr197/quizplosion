@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const backCard = document.querySelector('.card__image--back');
+    const backCard = document.querySelector('.card-container--rare .card__image--back');
 
     backCard.addEventListener('click', function() {
         console.log('Back card clicked');
