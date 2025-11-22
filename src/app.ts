@@ -1,6 +1,4 @@
-import GameEngine from './game-engine.js';
+import GameManager from './core/game-manager.js';
 
 // 🔥 START THE EXPLOSION 🔥
-const game = new GameEngine();
-
-game.start();
+GameManager.instance.start();
