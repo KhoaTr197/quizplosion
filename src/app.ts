@@ -1,6 +1,6 @@
-import DeckManager from './deck-manager.js';
-// const game =new GameManager();
-const deck = new DeckManager();
-deck.logCurrentDeck();
+import GameEngine from './game-engine.js';
 
-console.log(`Bộ bài mới được tạo có ${deck.size} thẻ bài!`);
+// 🔥 START THE EXPLOSION 🔥
+const game = new GameEngine();
+
+game.start();

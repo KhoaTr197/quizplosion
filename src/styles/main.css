@@ -1,0 +1,274 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-family: "Bangers", "Comic Neue", cursive, sans-serif;
+  box-sizing: border-box;
+}
+/* VARIABLES */
+:root {
+  --primary-clr: #f15f29;
+  --secondary-clr: #f8dc31;
+  --accent-clr: #89110f;
+  --text-title: linear-gradient(
+    0deg,
+    var(--secondary-clr) 29%,
+    var(--primary-clr) 70%
+  );
+}
+
+/* BASE */
+body {
+  overflow: hidden;
+  background: url("../../assets/game_background.png") center/cover no-repeat;
+}
+
+#game-canvas {
+  width: 100vw;
+  height: 100vh;
+}
+.text--gradient {
+  background: var(--text-title);
+  background-repeat: repeat-y;
+  background-size: 100% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.text--glow {
+  filter: drop-shadow(0 0 8px var(--accent-clr))
+    drop-shadow(0 0 14px var(--accent-clr))
+    drop-shadow(0 0 20px var(--accent-clr));
+}
+.text-xl {
+  font-size: 4rem;
+}
+.text-2xl {
+  font-size: 6rem;
+}
+.text--white {
+  color: #fff;
+}
+.text--center {
+  text-align: center;
+}
+
+/* MAIN */
+.banner-container {
+  position: relative;
+}
+
+.top-banner {
+  position: absolute;
+  inset: 0.5rem 6rem 0;
+  z-index: 99;
+}
+
+.top-banner-background {
+  width: 100%;
+  height: 14rem;
+  max-height: 14rem;
+}
+
+.top-banner-text {
+  position: absolute;
+  inset: 0;
+  font-size: 4rem;
+  color: #fff;
+  text-align: center;
+  padding: 0.5rem 2rem 3.5rem 0.5rem;
+}
+
+.content-container {
+  position: absolute;
+  inset: 10rem 4rem 6rem;
+  background-color: #fff;
+  border: 0.5rem solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  color: #333;
+  text-align: center;
+}
+
+.bottom-banner {
+  position: absolute;
+  bottom: 0;
+  left: 15rem;
+  right: 15rem;
+  z-index: 99;
+}
+
+.bottom-banner-background {
+  width: 100%;
+  max-height: 10rem;
+}
+
+.bottom-banner-text {
+  position: absolute;
+  inset: 8px 32px 16px;
+  font-size: 2rem;
+}
+
+.action-btn {
+  position: absolute;
+  bottom: 1rem;
+  width: 10rem;
+  z-index: 99;
+  transition: all ease 300ms;
+}
+
+.action-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Icons left/right */
+.icon-left {
+  left: 1.5rem;
+}
+
+.icon-right {
+  right: 1.5rem;
+}
+
+/* CARD SLIDE STYLES */
+.card-slide-container {
+  padding: 4rem 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+}
+.card-container {
+  position: relative;
+  width: 50%;
+  height: 540px;
+}
+
+/* REVEAL RARE CARD STYLES*/
+.card-container--rare::before {
+  content: "";
+  position: absolute;
+  inset: -10rem -14rem;
+  background: url("../assets/glow.png") center / 140% no-repeat;
+  z-index: -100;
+
+  animation: spin-glow 10s linear infinite;
+}
+@keyframes spin-glow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.card__image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+}
+.card__image--back {
+  z-index: 50;
+}
+.card__image--rare {
+  transform: rotateY(90deg);
+}
+.card__image--hide {
+  animation: hide-card 0.75s forwards;
+}
+.card__image--hide + .card__image--rare {
+  animation: reveal-rare-card 0.75s forwards 0.75s;
+}
+@keyframes hide-card {
+  to {
+    transform: rotateY(90deg);
+  }
+}
+@keyframes reveal-rare-card {
+  to {
+    transform: rotateY(0deg);
+  }
+}
+/* QUESTIONS MENU STYLES */
+.question-container {
+  width: 90%;
+  height: 70%;
+  margin: 0px auto;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  overflow: auto;
+}
+.question-item {
+  height: 7rem;
+  align-self: center;
+  background-color: #333;
+  border: #000 0.3rem solid;
+  border-radius: 1rem;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0px 0.5rem rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all ease 300ms;
+}
+.question-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0.7rem rgba(0, 0, 0, 0.5);
+}
+.question-item--last-completed {
+  animation: hidden-question-item 0.5s forwards;
+  user-select: none;
+}
+@keyframes hidden-question-item {
+  to {
+    transform: scale(0);
+  }
+}
+
+/* SLIDE CARD STYLES */
+.card__image--slided {
+  animation: slide-card 0.5s forwards;
+}
+@keyframes slide-card {
+  to {
+    transform: translateX(-150%);
+    opacity: 0;
+  }
+}
+
+/* HUY 22/11/25 STYLES */
+.screen,
+#true-answer {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.question-item--completed {
+  transform: scale(0);
+}
+
+.screen.active,
+#true-answer.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

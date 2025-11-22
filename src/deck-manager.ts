@@ -73,7 +73,6 @@ class DeckManager {
           CommonSpecialCardType.DIVIDE;
       const specialInfo = COMMON_SPECIAL_CARD_INFO[specialType];
       const insertPos = Math.floor(Math.random() * (this.deck.length)) + 1;
-      console.log(insertPos);
       this.deck.splice(insertPos, 0, {
         id: `${specialType}_${Date.now()}_special`,
         type: specialType,
