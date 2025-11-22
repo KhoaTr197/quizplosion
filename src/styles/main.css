@@ -249,7 +249,7 @@ body {
 
 /* HUY 22/11/25 STYLES */
 .screen,
-#true-answer {
+#correct-answer {
   display: none;
   animation: fadeIn 0.3s ease;
 }
@@ -258,7 +258,7 @@ body {
 }
 
 .screen.active,
-#true-answer.active {
+#correct-answer.active {
   display: block;
 }
 
