@@ -8,23 +8,27 @@
 }
 /* VARIABLES */
 :root {
-  --primary-clr: #F15F29;
-  --secondary-clr: #F8DC31;
+  --primary-clr: #f15f29;
+  --secondary-clr: #f8dc31;
   --accent-clr: #89110f;
-  --text-title: linear-gradient(0deg, var(--secondary-clr) 29%, var(--primary-clr) 70%);
+  --text-title: linear-gradient(
+    0deg,
+    var(--secondary-clr) 29%,
+    var(--primary-clr) 70%
+  );
 }
 
 /* BASE */
 body {
   overflow: hidden;
-  background: url("../assets/game_background.png") center/cover no-repeat;
+  background: url("../../assets/game_background.png") center/cover no-repeat;
 }
 
 #game-canvas {
   width: 100vw;
   height: 100vh;
 }
-.text--gradient{
+.text--gradient {
   background: var(--text-title);
   background-repeat: repeat-y;
   background-size: 100% 50%;
@@ -35,9 +39,9 @@ body {
   font-weight: 700;
 }
 .text--glow {
-  filter: drop-shadow(0 0 8px var(--accent-clr)) 
-          drop-shadow(0 0 14px var(--accent-clr)) 
-          drop-shadow(0 0 20px var(--accent-clr));
+  filter: drop-shadow(0 0 8px var(--accent-clr))
+    drop-shadow(0 0 14px var(--accent-clr))
+    drop-shadow(0 0 20px var(--accent-clr));
 }
 .text-xl {
   font-size: 4rem;
@@ -46,9 +50,9 @@ body {
   font-size: 6rem;
 }
 .text--white {
-  color: #fff; 
+  color: #fff;
 }
-.text--center{
+.text--center {
   text-align: center;
 }
 
@@ -172,10 +176,10 @@ body {
   object-fit: contain;
   cursor: pointer;
 }
-.card__image--back{
+.card__image--back {
   z-index: 50;
 }
-.card__image--rare{
+.card__image--rare {
   transform: rotateY(90deg);
 }
 .card__image--hide {
@@ -206,7 +210,7 @@ body {
   padding: 1rem;
   overflow: auto;
 }
-.question-item { 
+.question-item {
   height: 7rem;
   align-self: center;
   background-color: #333;
@@ -244,20 +248,27 @@ body {
 }
 
 /* HUY 22/11/25 STYLES */
-.screen, #true-answer {
-  display: none; 
+.screen,
+#correct-answer {
+  display: none;
   animation: fadeIn 0.3s ease;
 }
-.question-item--completed{
+.question-item--completed {
   transform: scale(0);
 }
 
-.screen.active, #true-answer.active {
+.screen.active,
+#correct-answer.active {
   display: block;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
