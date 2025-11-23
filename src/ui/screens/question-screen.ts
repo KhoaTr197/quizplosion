@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import GameStateManager, { GamePhase } from "../../core/game-state-manager.js";
-=======
->>>>>>> 21c023dd22aa6d2e8ec9a61caee637a13d1dca63
 import { QuizQuestion } from "../../core/questions.js";
 import QuizManager from "../../core/quiz-manager.js";
 import GameDispatcher from "../../game-dispatcher.js";
@@ -29,11 +26,7 @@ class QuestionScreen {
    * Hiển thị màn hình
    */
   public render(): void {
-<<<<<<< HEAD
     const question = QuizManager.instance.pickById(this.questionId);
-=======
-    const question = QuizManager.instance.pickByIndex(this.questionId);
->>>>>>> 21c023dd22aa6d2e8ec9a61caee637a13d1dca63
     if (!question) return;
 
     this.questionEl.textContent = question.content;
