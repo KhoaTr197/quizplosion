@@ -4,6 +4,8 @@ import {
   CommonSpecialCardType,
   COMMON_POINT_CARD_INFO,
   COMMON_SPECIAL_CARD_INFO,
+  BACK_CARD_INFO,
+  PlaceholderCardType,
 } from "./cards.js";
 
 /**
@@ -106,7 +108,14 @@ class DeckManager {
         isBomb: true,
       };
 
-      this.deck = [bombCard, ...pointCards];
+      const backCard = {
+        id: `${BACK_CARD_INFO.name}_${Date.now()}_back`,
+        ...BACK_CARD_INFO,
+        type: PlaceholderCardType.PLACEHOLDER,
+        isBomb: false,
+      }
+
+      this.deck = [bombCard, ...pointCards, backCard];
     }
   }
   /**
@@ -140,6 +149,18 @@ class DeckManager {
     if (this.deck.length === 0)
       return null;
     return this.deck.pop()!;
+  }
+  /**
+   * Xem trước lá bài tiếp theo (lá bài cuối cùng trong mảng)
+   * mà KHÔNG rút nó ra khỏi bộ bài.
+   * @returns Lá bài tiếp theo trong bộ bài hoặc null nếu bộ bài trống
+   */
+  public peek(): DeckCard | null {
+    if (this.deck.length === 0) {
+      return null;
+    }
+    const lastIndex = this.deck.length - 1;
+    return this.deck[lastIndex];
   }
   /**
    * Xào bộ bài hiện tại (trừ lá cuối là bomb) (sử dụng thuật toán Fisher-Yates)

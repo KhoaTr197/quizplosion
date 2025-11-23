@@ -26,7 +26,13 @@ export enum RareCardType {
   CHANGE = "change",
   LOSE_ALL = "lose_all",
 }
-export type CardType = CommonCardType | RareCardType;
+export enum PlaceholderCardType {
+  PLACEHOLDER = "placeholder"
+}
+export type CardType =
+  PlaceholderCardType
+  | CommonCardType
+  | RareCardType;
 
 export interface CardMetadata {
   /** Hình ảnh - object chứa đường dẫn và text thay thế */
@@ -186,5 +192,6 @@ export const BACK_CARD_INFO: Pick<Card, "name" | "metadata"> = {
       src: "../../assets/card_back.png",
       alt: "Back Of The Card",
     },
+    sfx: ""
   }
 }

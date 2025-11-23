@@ -9,7 +9,7 @@ export enum GamePhase {
   QUESTION_MENU = 'QUESTION_MENU',       // Chọn câu hỏi
   SHOWING_QUESTION = 'SHOWING_QUESTION', // Đội đang trả lời       
   REVEALING_ANSWER = 'REVEALING_ANSWER', // Show đáp án đúng
-  RISK_DRAWING = 'RISK_DRAWING',         // Đội đúng gặp bài thường - rút hoặc dừng
+  COMMON_CARD_DRAWING = 'COMMON_CARD_DRAWING',         // Đội đúng gặp bài thường - rút hoặc dừng
   CARD_REVEALED = 'CARD_REVEALED',       // Mới rút bài
   BOMB_EXPLODED = 'BOMB_EXPLODED',       // Rút ra bomb/nuclear
   RARE_CARD_DECISION = 'RARE_CARD_DECISION', // Đội đúng gặp bài hiếm - lật hoặc không
@@ -22,7 +22,6 @@ export enum GamePhase {
 export interface GameState {
   version: number;
   phase: GamePhase;
-  // screen: GameScreen;
   currentQuestionId?: number;       // câu hỏi hiện tại
   answeredQuestionIds: number[];        // câu hỏi đã trả lời
   lastAnsweredQuestionId?: number;  // câu hỏi cuối trả lời
