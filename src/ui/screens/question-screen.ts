@@ -68,7 +68,7 @@ class QuestionScreen {
       }
       else if (phase === GamePhase.REVEALING_ANSWER) {
         GameDispatcher.instance.dispatch({
-          type: 'BEGIN_RISK_DRAWING',
+          type: 'BEGIN_COMMON_CARD_DRAWING',
         })
       }
     });

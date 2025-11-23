@@ -19,10 +19,9 @@ export type GameAction =
   /** Quay lại menu câu hỏi */
   | { type: 'RETURN_TO_QUESTION_MENU' }
   // Rút bài thường
-  | { type: 'BEGIN_RISK_DRAWING' }
-  | { type: 'DRAW_NEXT_CARD' }
+  | { type: 'BEGIN_COMMON_CARD_DRAWING' }
+  | { type: 'DRAW_NEXT_CARD'; payload: { card: Card } }
   | { type: 'STOP_DRAWING' }
-  | { type: 'CARD_DRAWN'; payload: { card: Card } }
   /** Cướp câu hỏi từ nhóm không trả lời được (theo thứ tự top-down) */
   | { type: 'STEAL_QUESTION'; }
   /** Bomb */
