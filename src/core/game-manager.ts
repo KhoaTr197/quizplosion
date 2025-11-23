@@ -6,6 +6,7 @@ import StartMenuScreen from "../ui/screens/start-menu-screen.js";
 import QuestionScreen from "../ui/screens/question-screen.js";
 import PersistentUI from "../ui/persistent-ui-manager.js";
 import CardDrawingScreen from "../ui/screens/card-drawing-screen.js";
+import AudioManager from "./audio-manager.js";
 
 
 /**
@@ -17,6 +18,7 @@ import CardDrawingScreen from "../ui/screens/card-drawing-screen.js";
 class GameManager {
   /** Instance duy nhất – giống Unity */
   private static _instance: GameManager;
+  private lastGameScreen?: ScreenId;
 
   private constructor() {
     this.subscribeToDispatcher();
@@ -37,6 +39,7 @@ class GameManager {
    * Dựa vào state hiện tại để render màn hình phù hợp
    */
   public start(): void {
+    AudioManager.instance.setVolume(1);
     const state = GameStateManager.instance.getState();
     this.renderPhase(state.phase, state);
   }
@@ -48,20 +51,37 @@ class GameManager {
    */
   private renderPhase(phase: GamePhase, state: GameState): void {
     console.log("[GameManager]: Phase -", phase);
+
+    const targetScreenId = this.getCurrentScreenId(phase);
+
+    // Nếu vẫn đang ở cùng một màn hình → KHÔNG render lại!
+    if (this.lastGameScreen === targetScreenId) {
+      console.log("[GameManager]: Screen không đổi → bỏ qua render");
+      return;
+    }
+
+    console.log(`[GameManager]: Chuyển màn hình → ${this.lastGameScreen} → ${targetScreenId}`);
+
+    // Cập nhật lastGameScreen TRƯỚC khi render (rất quan trọng!)
+    this.lastGameScreen = targetScreenId;
+
     switch (phase) {
       case GamePhase.START_MENU: {
         UI.show(ScreenId.START_MENU);
         (new StartMenuScreen).render();
+
         break;
       }
       case GamePhase.QUESTION_MENU: {
         UI.show(ScreenId.QUESTION_MENU);
         (new QuestionMenuScreen).render();
+
         break;
       }
       case GamePhase.SHOWING_QUESTION: {
         UI.show(ScreenId.QUESTION);
         (new QuestionScreen(state.currentQuestionId!)).render();
+
         break;
       }
       case GamePhase.REVEALING_ANSWER:
@@ -69,9 +89,10 @@ class GameManager {
       case GamePhase.RARE_CARD_DECISION: {
         break;
       }
-      case GamePhase.RISK_DRAWING: {
+      case GamePhase.COMMON_CARD_DRAWING: {
         UI.show(ScreenId.COMMON_CARD_DRAWING);
         (new CardDrawingScreen).render();
+
         break;
       }
       default:
@@ -92,7 +113,8 @@ class GameManager {
       [GamePhase.START_MENU]: ScreenId.START_MENU,
       [GamePhase.QUESTION_MENU]: ScreenId.QUESTION_MENU,
       [GamePhase.SHOWING_QUESTION]: ScreenId.QUESTION,
-      [GamePhase.RISK_DRAWING]: ScreenId.COMMON_CARD_DRAWING,
+      [GamePhase.REVEALING_ANSWER]: ScreenId.QUESTION,
+      [GamePhase.COMMON_CARD_DRAWING]: ScreenId.COMMON_CARD_DRAWING,
       [GamePhase.RARE_CARD_DECISION]: ScreenId.RARE_CARD,
     };
     return map[phase] || ScreenId.START_MENU;
@@ -103,8 +125,6 @@ class GameManager {
    */
   private subscribeToDispatcher(): void {
     GameDispatcher.instance.subscribe((action: GameAction) => {
-      const state = GameStateManager.instance.getState();
-
       switch (action.type) {
         case 'START_GAME':
           GameStateManager.instance.setState({ phase: GamePhase.QUESTION_MENU });
@@ -126,9 +146,9 @@ class GameManager {
             phase: GamePhase.QUESTION_MENU,
           })
           break;
-        case 'BEGIN_RISK_DRAWING':
+        case 'BEGIN_COMMON_CARD_DRAWING':
           GameStateManager.instance.setState({
-            phase: GamePhase.RISK_DRAWING,
+            phase: GamePhase.COMMON_CARD_DRAWING,
           })
           break;
         case 'RESET_GAME':
@@ -138,7 +158,8 @@ class GameManager {
           break;
       }
 
-      this.renderPhase(GameStateManager.instance.getState().phase, GameStateManager.instance.getState());
+      const state = GameStateManager.instance.getState();
+      this.renderPhase(state.phase, state);
     });
   }
 }
