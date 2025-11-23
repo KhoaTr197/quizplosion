@@ -22,7 +22,7 @@ export enum GamePhase {
 export interface GameState {
   version: number;
   phase: GamePhase;
-  currentQuestionId?: number;       // câu hỏi hiện tại
+  currentQuestionId?: number | null;       // câu hỏi hiện tại
   answeredQuestionIds: number[];        // câu hỏi đã trả lời
   lastAnsweredQuestionId?: number;  // câu hỏi cuối trả lời
   drawnCardsThisTurn: Card[];       // lá bài đã bốc trong lượt này (hiển thị animation)

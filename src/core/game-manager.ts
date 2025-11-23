@@ -138,12 +138,22 @@ class GameManager {
         case 'REVEAL_CORRECT_ANSWER':
           GameStateManager.instance.setState({
             phase: GamePhase.REVEALING_ANSWER,
-            lastAnsweredQuestionId: action.payload.id
+            lastAnsweredQuestionId: action.payload.id,
+            answeredQuestionIds: [
+              ...GameStateManager.instance.getState().answeredQuestionIds,
+              action.payload.id
+            ]
           })
           break;
         case 'SHOW_QUESTION_MENU':
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
+          })
+          break;
+        case 'RETURN_TO_QUESTION_MENU':
+          GameStateManager.instance.setState({
+            phase: GamePhase.QUESTION_MENU,
+            currentQuestionId: null
           })
           break;
         case 'BEGIN_COMMON_CARD_DRAWING':

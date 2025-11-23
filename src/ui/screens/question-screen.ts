@@ -18,6 +18,7 @@ class QuestionScreen {
   private nextQuestionBtn = document.getElementById('next-question-btn') as HTMLElement;
 
   constructor(questionId: QuizQuestion["id"]) {
+    console.log('[QuestionScreen] Question ID - ', questionId);
     this.questionId = questionId;
     this.bindEvents();
   }
@@ -47,19 +48,23 @@ class QuestionScreen {
    */
   private bindEvents(): void {
     // Nút Đóng
-    this.closeQuestionBtn.addEventListener('click', () => {
+    this.closeQuestionBtn.onclick = () => {
       GameDispatcher.instance.dispatch({
         type: 'SHOW_QUESTION_MENU',
       });
-    })
+
+      QuizManager.instance.answerById(this.questionId);
+    }
 
     // Nút Hiện Câu Trả Lời, click thêm lần nữa sẽ chuyển trang rút bài
-    this.nextQuestionBtn.addEventListener('click', () => {
+    this.nextQuestionBtn.onclick = () => {
       const phase = GameStateManager.instance.getState().phase;
 
       // Hiện đáp án
       if (phase === GamePhase.SHOWING_QUESTION) {
         this.correctAnswerEl.classList.add('active');
+
+        console.log(this.questionId);
 
         GameDispatcher.instance.dispatch({
           type: 'REVEAL_CORRECT_ANSWER',
@@ -71,7 +76,7 @@ class QuestionScreen {
           type: 'BEGIN_COMMON_CARD_DRAWING',
         })
       }
-    });
+    };
   }
 }
 export default QuestionScreen;
