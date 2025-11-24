@@ -8,6 +8,7 @@ import PersistentUI from "../ui/persistent-ui-manager.js";
 import CardDrawingScreen from "../ui/screens/card-drawing-screen.js";
 import AudioManager from "./audio-manager.js";
 import NewQuestionScreen from "../ui/screens/new-question-screen.js";
+import DeckManager from "./deck-manager.js";
 
 
 /**
@@ -155,7 +156,9 @@ class GameManager {
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
             currentQuestionId: null
+
           })
+          DeckManager.instance.reset();
           break;
         case 'BEGIN_COMMON_CARD_DRAWING':
           GameStateManager.instance.setState({
