@@ -43,7 +43,7 @@ class TeamManager {
   }
   public setup(): void {
     //this.answeringIndex = this.currentTurnIndex;
-    this.stealOrders = this.turnOrders.filter((_, k)=> k !== this.currentTurnIndex);
+    this.stealOrders = this.turnOrders.filter((_, k) => k !== this.currentTurnIndex);
   }
   public getTeams(): Team[] {
     return this.teams;
@@ -53,7 +53,7 @@ class TeamManager {
   }
   public setTeams(teams: Team[]): void {
     this.teams = teams;
-    this.turnOrders = teams.map(t=>t.id)
+    this.turnOrders = teams.map(t => t.id)
   }
   public getTurnOrders(): number[] {
     return this.turnOrders;
@@ -86,7 +86,7 @@ class TeamManager {
         break;
     }
     // Đảm bảo điểm không âm
-    if (team.score < 0) team.score = 0; 
+    if (team.score < 0) team.score = 0;
   }
   /**
    * Lấy thông tin đội đang đến lượt
@@ -110,7 +110,7 @@ class TeamManager {
 
     // Cập nhật người đang chơi là người giữ lượt chính
     this.activeTeamId = this.turnOrders[this.currentTurnIndex];
-    
+
     // Xóa hàng đợi cướp 
     this.stealOrders = [];
   }
@@ -121,13 +121,13 @@ class TeamManager {
     if (this.turnOrders.length == 0) return;
     this.stealOrders.shift();
   }
-  public getStealOrders(): number[]{
+  public getStealOrders(): number[] {
     return this.stealOrders;
   }
   public prepareStealQueue(): void {
     this.stealOrders = [];
     const total = this.turnOrders.length;
-    
+
     // Bắt đầu từ người kế tiếp của lượt chính, lặp qua hết vòng
     for (let i = 1; i < total; i++) {
       const idx = (this.currentTurnIndex + i) % total;
@@ -152,8 +152,8 @@ class TeamManager {
     }
 
     // Lấy ID người đầu hàng đợi và xóa khỏi hàng đợi
-    const nextStealTeamId = this.stealOrders.shift(); 
-    
+    const nextStealTeamId = this.stealOrders.shift();
+
     if (nextStealTeamId !== undefined) {
       this.activeTeamId = nextStealTeamId;
       return true;

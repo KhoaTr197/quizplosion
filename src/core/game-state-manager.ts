@@ -1,4 +1,5 @@
 import { Card } from "./cards.js";
+import Team from "./team.js";
 
 /**
  * Các giai đoạn (phase) chính của trò chơi

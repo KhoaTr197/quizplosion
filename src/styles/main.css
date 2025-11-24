@@ -50,6 +50,9 @@ body {
     drop-shadow(0 0 14px var(--accent-clr))
     drop-shadow(0 0 20px var(--accent-clr));
 }
+.text-lg {
+  font-size: 2rem;
+}
 .text-xl {
   font-size: 4rem;
 }

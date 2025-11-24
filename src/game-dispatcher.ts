@@ -1,5 +1,6 @@
 import { Card } from "./core/cards.js";
 import { QuizQuestion } from "./core/questions.js";
+import Team from "./core/team.js";
 
 /**
  * Các hành động (action) mà hệ thống hỗ trợ.
@@ -10,6 +11,8 @@ export type GameAction =
   | { type: 'START_GAME' }
   /** Thêm đội vào trò chơi */
   | { type: 'ADD_TEAM'; payload: { name: string } }
+  /** Hoàn thành setup, bắt đầu chơi */
+  | { type: 'FINISH_TEAM_SETUP'; payload: { teams: Team[] } }
   /** Hiện menu câu hỏi */
   | { type: 'SHOW_QUESTION_MENU' }
   /** Chọn một câu hỏi từ menu câu hỏi */

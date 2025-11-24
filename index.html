@@ -16,19 +16,37 @@
 <body>
   <div id="game-canvas">
     <button id="reset-btn">RESET STATE</button>
+    <div id="scoreboard-container">
+        <h3>Score Board</h3>
+        <div id="score-list"></div>
+    </div>
+    <button id="scoreboard-btn">Show Score Board</button>
     <!--MAIN MENU-->
     <div id="start-menu-screen" class="screen">
       <div class="menu-container">
         <div class="menu-buttons">
-          <button class="menu-button" id="start-btn">Bắt đầu trò chơi</button>
-          <button class="menu-button" id="guide-btn">Hướng dẫn</button>
+          <button class="menu-button" id="start-btn">Start</button>
+          <button class="menu-button" id="guide-btn">Guide</button>
         </div>
       </div>
+    </div>
+    
+    <!--SETUP-->
+    <div id="setup-screen" class="screen">
+      <h2 class="text--white text--glow text--center text-2xl">Game Setup</h2>
+        <div class="input-group">
+            <label>Number of teams:</label>
+            <input type="number" id="num-teams" min="2" max="10" value="3" onchange="renderTeamInputs()">
+        </div>
+        <div id="team-names-area"></div>
+        <button id="play-btn">Play</button>
+        <button>Return</button>
     </div>
 
     <!--QUESTION MENU-->
     <div id="question-menu-screen" class="screen">
-      <h1 class="text--white text--glow text--center text-2xl">Choose a question</h1>
+      <p class="text-lg text--gradient text--glow text--center" id="current-team-name">Turn of: Team A</p>
+      <h2 class="text--white text--glow text--center text-2xl">Choose a question</h2>
       <div class="question-container">
         <!--tạo động danh sách câu hỏi ở đây-->
       </div>
