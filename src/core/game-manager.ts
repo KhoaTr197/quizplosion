@@ -9,6 +9,8 @@ import CardDrawingScreen from "../ui/screens/card-drawing-screen.js";
 import AudioManager from "./audio-manager.js";
 import SetupScreen from "../ui/screens/setup-screen.js";
 import TeamManager from "./team-manager.js";
+import NewQuestionScreen from "../ui/screens/new-question-screen.js";
+import DeckManager from "./deck-manager.js";
 
 
 /**
@@ -86,8 +88,8 @@ class GameManager {
         break;
       }
       case GamePhase.SHOWING_QUESTION: {
-        UI.show(ScreenId.QUESTION);
-        (new QuestionScreen(state.currentQuestionId!)).render();
+        UI.show(ScreenId.NEW_QUESTION);
+        (new NewQuestionScreen(state.currentQuestionId!)).render();
 
         break;
       }
@@ -162,13 +164,25 @@ class GameManager {
         case 'REVEAL_CORRECT_ANSWER':
           GameStateManager.instance.setState({
             phase: GamePhase.REVEALING_ANSWER,
-            lastAnsweredQuestionId: action.payload.id
+            lastAnsweredQuestionId: action.payload.id,
+            answeredQuestionIds: [
+              ...GameStateManager.instance.getState().answeredQuestionIds,
+              action.payload.id
+            ]
           })
           break;
         case 'SHOW_QUESTION_MENU':
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
           })
+          break;
+        case 'RETURN_TO_QUESTION_MENU':
+          GameStateManager.instance.setState({
+            phase: GamePhase.QUESTION_MENU,
+            currentQuestionId: null
+
+          })
+          DeckManager.instance.reset();
           break;
         case 'BEGIN_COMMON_CARD_DRAWING':
           GameStateManager.instance.setState({

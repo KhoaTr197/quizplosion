@@ -76,6 +76,61 @@
       <img class="action-btn icon-right" id="next-question-btn" src="./assets/next_btn.png" alt="Next">
     </div>
 
+    <!--NEW QUESTION-->
+    <div id="new-question-screen" class="screen">
+      <div class="new-question">
+        <!-- Header -->
+        <div class="new-question__header">
+          <div class="turn-order">
+            <div id="turn-order-bar" class="turn-order__list">
+              <!-- JS will populate turn slots -->
+            </div>
+          </div>
+
+          <div class="current-turn">
+            <span class="current-turn__label">ACTIVE TURN</span>
+            <div id="current-turn" class="current-turn__team"></div>
+          </div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="new-question__layout">
+
+          <!-- Left Sidebar -->
+          <div id="new-question-screen-left-sidebar" class="new-question__sidebar new-question__sidebar--left">
+          </div>
+
+          <!-- Center: Question -->
+          <div class="new-question__main">
+            <div class="question-card">
+              <div id="new-question-content" class="question-card__text">
+                In what year did the Great Kingdom fall?
+              </div>
+
+              <div id="new-question-list-answers" class="question-card__answers">
+                <div class="answer-option">A<br>1066</div>
+                <div class="answer-option">B<br>1215</div>
+                <div class="answer-option">C<br>1453</div>
+                <div class="answer-option">D<br>1492</div>
+              </div>
+
+              <p id="new-question-correct-answer" class="question-card__reveal text--gradient text--glow text--center">
+              </p>
+            </div>
+
+            <div id="new-question-action-bar" class="question-actions">
+              <img class="action-btn action-btn--close" src="./assets/close_btn.png" alt="Close question">
+              <img class="action-btn action-btn--next" src="./assets/next_btn.png" alt="Next question">
+            </div>
+          </div>
+
+          <!-- Right Sidebar -->
+          <div id="new-question-screen-right-sidebar" class="new-question__sidebar new-question__sidebar--right">
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!--RARE CARD-->
     <div id="rare-card-screen" class="screen">
       <div class="card-slide-container">
@@ -86,7 +141,7 @@
         </div>
         <div>
           <p class="text--gradient text--glow text-2xl text--center">YOU FOUND A RARE CARD!</p>
-          <p class="text-xl text--white text--center">Reveal it or get 5 points?</p>
+          <p class="text-xl text--white text--center">Reveal it or get 5?</p>
         </div>
       </div>
 

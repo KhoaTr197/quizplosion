@@ -12,8 +12,6 @@ class QuizManager {
   private static _instance: QuizManager;
   /** Danh sách câu hỏi còn lại */
   private available: QuizQuestion[] = [];
-  /** Danh sách câu hỏi đã được rút (đã trả lời hoặc đang dùng) */
-  private answered: QuizQuestion[] = [];
 
   /** Private constructor → không cho new trực tiếp */
   constructor() {
@@ -35,7 +33,6 @@ class QuizManager {
   */
   public reset() {
     this.available = [...QUESTIONS];
-    this.answered = [];
     this.shuffle(this.available);
   }
   /** Trộn ngẫu nhiên mảng */
@@ -45,6 +42,7 @@ class QuizManager {
       [array[i], array[j]] = [array[j], array[i]];
     }
   }
+
   /**
    * Chọn câu hỏi theo vị trí trong mảng available
    * @param index Vị trí (0-based)
@@ -56,11 +54,11 @@ class QuizManager {
       return null;
     }
 
-    const question = this.available.splice(index, 1)[0];
-    this.answered.push(question);
+    const question = this.available[index]!;
     console.log(`[QuizManager]: Đã chọn câu hỏi tại index ${index}: `, question);
     return question;
   }
+
   /**
    * Chọn câu hỏi theo ID (rất hữu ích cho chọn câu hỏi từ grid)
    * @param id ID của câu hỏi (trong QUESTIONS)
@@ -73,9 +71,43 @@ class QuizManager {
       return null;
     }
 
-    const question = this.available.splice(index, 1)[0];
-    this.answered.push(question);
+    const question = this.available[index]!;
     console.log(`[QuizManager]: Đã chọn câu hỏi ID "${id}": `, question);
+    return question;
+  }
+
+  /**
+   * Đánh dấu trả lời câu hỏi theo vị trí trong mảng available
+   * @param index Vị trí (0-based)
+   * @returns Câu hỏi hoặc null nếu index không hợp lệ
+   */
+  public answerByIndex(index: number): QuizQuestion | null {
+    if (index < 0 || index >= this.available.length) {
+      console.warn(`QuizManager: Index ${index} không hợp lệ (còn ${this.available.length} câu)`);
+      return null;
+    }
+
+    const question = this.available[index]!;
+    question.isAnswered = true;
+    console.log(`[QuizManager]: Đã trả lời câu hỏi tại index ${index}: `, question);
+    return question;
+  }
+
+  /**
+   * Đánh dấu trả lời câu hỏi theo ID
+   * @param id ID của câu hỏi (trong QUESTIONS)
+   * @returns Câu hỏi hoặc null nếu không tìm thấy
+   */
+  public answerById(id: QuizQuestion['id']): QuizQuestion | null {
+    const index = this.available.findIndex(q => q.id === id);
+    if (index === -1) {
+      console.warn(`QuizManager: Không tìm thấy câu hỏi với ID "${id}"`);
+      return null;
+    }
+
+    const question = this.available[index]!;
+    question.isAnswered = true;
+    console.log(`[QuizManager]: Đã trả lời câu hỏi có ID "${id}": `, question);
     return question;
   }
 
@@ -88,6 +120,7 @@ class QuizManager {
   public get questions(): Readonly<QuizQuestion[]> {
     return structuredClone(this.available);
   }
+
   /**
    * Số lượng câu hỏi còn lại chưa được trả lời.
    * @returns Số câu hỏi còn lại
@@ -95,13 +128,15 @@ class QuizManager {
   public get remaining(): number {
     return this.available.length;
   }
+
   /**
    * Số lượng câu hỏi đã được rút ra (đã trả lời hoặc đang hiển thị).
    * @returns Số câu hỏi đã trả lời
    */
   public get totalAnswered(): number {
-    return this.answered.length;
+    return this.available.filter(q => q.isAnswered).length;
   }
+
   /**
    * Tổng số câu hỏi có trong game.
    * @returns Tổng số câu hỏi ban đầu
@@ -109,6 +144,7 @@ class QuizManager {
   public get totalQuestions(): number {
     return QUESTIONS.length;
   }
+
   /**
    * Kiểm tra xem đã hết câu hỏi để rút chưa.
    * @returns true nếu không còn câu hỏi nào
@@ -116,12 +152,13 @@ class QuizManager {
   public get isEmpty(): boolean {
     return this.available.length === 0;
   }
+
   /**
    * Danh sách các câu hỏi đã được trả lời trong ván hiện tại.
    * @returns Mảng readonly các câu hỏi đã trả lời
    */
   public get answeredQuestions(): Readonly<QuizQuestion[]> {
-    return structuredClone(this.answered);
+    return structuredClone(this.available.filter(q => q.isAnswered));
   }
 }
 

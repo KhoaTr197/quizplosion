@@ -27,7 +27,7 @@ class StartMenuScreen {
    */
   private bindEvents(): void {
     // Nút Bắt đầu
-    this.startBtn.addEventListener('click', () => {
+    this.startBtn.onclick = () => {
       this.startBtn.disabled = true;
 
       GameDispatcher.instance.dispatch({
@@ -35,15 +35,15 @@ class StartMenuScreen {
       });
 
       this.startBtn.classList.add('clicked');
-    });
+    };
 
     // Nút Hướng dẫn
-    this.guideBtn.addEventListener('click', () => {
+    this.guideBtn.onclick = () => {
       console.log('Hướng dẫn clicked!');
       GameDispatcher.instance.dispatch({
         type: 'SHOW_GUIDE'
       });
-    });
+    };
   }
 }
 

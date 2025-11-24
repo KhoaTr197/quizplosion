@@ -23,7 +23,7 @@ export enum GamePhase {
 export interface GameState {
   version: number;
   phase: GamePhase;
-  currentQuestionId?: number;       // câu hỏi hiện tại
+  currentQuestionId?: number | null;       // câu hỏi hiện tại
   answeredQuestionIds: number[];        // câu hỏi đã trả lời
   lastAnsweredQuestionId?: number;  // câu hỏi cuối trả lời
   drawnCardsThisTurn: Card[];       // lá bài đã bốc trong lượt này (hiển thị animation)
@@ -35,6 +35,7 @@ export interface GameState {
   attemptedTeamIds?: [] // danh sách ID đội đã thử trả lời câu hỏi hiện tại nhưng sai
   createdAt: number;
   updatedAt: number;
+  
 }
 
 const STORAGE_KEY = 'quizplosion_savedata';

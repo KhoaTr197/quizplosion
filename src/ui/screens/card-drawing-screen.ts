@@ -7,6 +7,11 @@ import GameDispatcher from "../../game-dispatcher.js";
  */
 class CardDrawingScreen {
   private listSlideCards = document.querySelector('#list-slide-cards') as HTMLElement;
+  private questionMenuBtn = document.querySelector('#question-menu-btn') as HTMLElement;
+
+  constructor() {
+    this.bindEvents();
+  }
 
   /**
    * Render toàn bộ lá bài
@@ -28,7 +33,7 @@ class CardDrawingScreen {
         img.classList.add('card__image--back');
 
       if (!card.isBomb)
-        img.addEventListener('click', () => {
+        img.onclick = () => {
           console.log('[CardDrawingScreen]: ', img);
           img.classList.add('card__image--slided');
 
@@ -40,13 +45,21 @@ class CardDrawingScreen {
               card: deck.peek()!
             }
           })
-        });
+        };
 
       cardContainer.appendChild(img);
     })
 
     this.listSlideCards.innerHTML = '';
     this.listSlideCards.appendChild(cardContainer);
+  }
+
+  public bindEvents(): void {
+    this.questionMenuBtn.onclick = () => {
+      GameDispatcher.instance.dispatch({
+        type: "RETURN_TO_QUESTION_MENU",
+      })
+    }
   }
 }
 export default CardDrawingScreen;

@@ -39,11 +39,11 @@ class PersistentUIManager {
 
   private bindEvents(): void {
     // Reset game
-    this.resetBtn.addEventListener("click", () => {
+    this.resetBtn.onclick = () => {
       if (confirm("Bạn có chắc muốn bắt đầu lại game?")) {
         GameDispatcher.instance.dispatch({ type: "RESET_GAME" });
       }
-    });
+    };
   }
 }
 
