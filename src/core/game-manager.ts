@@ -7,6 +7,7 @@ import QuestionScreen from "../ui/screens/question-screen.js";
 import PersistentUI from "../ui/persistent-ui-manager.js";
 import CardDrawingScreen from "../ui/screens/card-drawing-screen.js";
 import AudioManager from "./audio-manager.js";
+import NewQuestionScreen from "../ui/screens/new-question-screen.js";
 
 
 /**
@@ -79,8 +80,8 @@ class GameManager {
         break;
       }
       case GamePhase.SHOWING_QUESTION: {
-        UI.show(ScreenId.QUESTION);
-        (new QuestionScreen(state.currentQuestionId!)).render();
+        UI.show(ScreenId.NEW_QUESTION);
+        (new NewQuestionScreen(state.currentQuestionId!)).render();
 
         break;
       }
