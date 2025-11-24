@@ -4,10 +4,17 @@ import {
   CommonSpecialCardType,
   COMMON_POINT_CARD_INFO,
   COMMON_SPECIAL_CARD_INFO,
+  RARE_CARD_INFO,
+  RareCardType,
   BACK_CARD_INFO,
   PlaceholderCardType,
 } from "./cards.js";
-
+import {
+  randomRareCard_Percentage
+} from './random.js'
+import
+  GameStateManager
+from "./game-state-manager.js"
 /**
  * Interface của một thẻ bài trong bộ bài
  */
@@ -54,19 +61,41 @@ class DeckManager {
    * Mỗi lá được chọn ngẫu nhiên từ tất cả các loại thẻ
    */
   private initializeDeck(): void {
+    const state = GameStateManager.instance.getState();
+    
     // Reset deck
     this.deck = [];
 
     // TODO: Thêm thuật toán random loại deck
-    this.deckType = "Common";
+
+    this.deckType = randomRareCard_Percentage(state.answeredQuestionIds.length);
 
     // Generate bộ bài theo loại
-    if (this.deckType == "Common") {
+     if(this.deckType==='Rare'){
+       const backCard = {
+        id: `${BACK_CARD_INFO.name}_${Date.now()}_back`,
+        ...BACK_CARD_INFO,
+        type: PlaceholderCardType.PLACEHOLDER,
+        isBomb: false,
+      }
+      const percentRareCard=Math.random();
+      let RareCard:RareCardType=percentRareCard>=0.6?RareCardType.CHANGE:RareCardType.LOSE_ALL;
+      const info=RARE_CARD_INFO[RareCard];
+      this.deck.push({
+         id: `${RareCard}_${Date.now()}_${1}`,
+          ...info,
+          type: RareCard,
+          isBomb: true,
+      })
+      
+
+    }
+   else if  (this.deckType == "Common") {
       // Kích thước bộ bài: 1 → 8 lá điểm + 1 lá đặc biệt + 1 bomb/nuclear → tổng 3 → 10 lá
       const deckSize = Math.floor(Math.random() * 8) + 2;
 
       // Thêm các lá điểm theo trọng số
-      const pointCards = [];
+      const pointCards: Card[] = [];
       for (let i = 0; i < deckSize - 1; i++) {
         const pointType = this.randomPointCard();
         const info = COMMON_POINT_CARD_INFO[pointType];
@@ -87,8 +116,8 @@ class DeckManager {
           CommonSpecialCardType.MULTIPLE :
           CommonSpecialCardType.DIVIDE;
       const specialInfo = COMMON_SPECIAL_CARD_INFO[specialType];
-      const insertPos = Math.floor(Math.random() * (this.deck.length)) + 1;
-      this.deck.splice(insertPos, 0, {
+      const insertPos = Math.floor(Math.random() * (pointCards.length)) + 1;
+      pointCards.splice(insertPos, 0, {
         id: `${specialType}_${Date.now()}_special`,
         ...specialInfo,
         type: specialType,

@@ -29,6 +29,7 @@ export interface GameState {
   lastDrawnCard?: Card;             // lá vừa bốc (cho hiệu ứng)
   createdAt: number;
   updatedAt: number;
+  
 }
 
 const STORAGE_KEY = 'quizplosion_savedata';
