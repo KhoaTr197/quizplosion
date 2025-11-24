@@ -3,6 +3,7 @@
  */
 export enum ScreenId {
   START_MENU = 'start-menu-screen',
+  SETUP = 'setup-screen',
   QUESTION_MENU = 'question-menu-screen',
   QUESTION = 'question-screen',
   RARE_CARD = 'rare-card-screen',
@@ -32,6 +33,7 @@ class UIManager {
 
     this.screens = {
       [ScreenId.START_MENU]: getEl(ScreenId.START_MENU),
+      [ScreenId.SETUP]: getEl(ScreenId.SETUP),
       [ScreenId.QUESTION_MENU]: getEl(ScreenId.QUESTION_MENU),
       [ScreenId.QUESTION]: getEl(ScreenId.QUESTION),
       [ScreenId.RARE_CARD]: getEl(ScreenId.RARE_CARD),

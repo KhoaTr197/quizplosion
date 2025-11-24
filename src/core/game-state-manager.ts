@@ -1,4 +1,5 @@
 import { Card } from "./cards.js";
+import Team from "./team.js";
 
 /**
  * Các giai đoạn (phase) chính của trò chơi
@@ -27,6 +28,11 @@ export interface GameState {
   lastAnsweredQuestionId?: number;  // câu hỏi cuối trả lời
   drawnCardsThisTurn: Card[];       // lá bài đã bốc trong lượt này (hiển thị animation)
   lastDrawnCard?: Card;             // lá vừa bốc (cho hiệu ứng)
+  teams?: Team[]; // danh sách đội chơi
+  turnOrder?: number[]; // thứ tự lượt chơi (mảng chỉ số đội)
+  currentTurnIndex?: 0, // chỉ số lượt hiện tại trong turnOrder
+  stealingTeamIndex?: null, // chỉ số đội đang cướp câu hỏi (nếu có)
+  attemptedTeamIds?: [] // danh sách ID đội đã thử trả lời câu hỏi hiện tại nhưng sai
   createdAt: number;
   updatedAt: number;
 }
