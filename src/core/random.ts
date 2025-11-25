@@ -1,4 +1,4 @@
-import { QUESTIONS } from './questions';
+import{ QUESTIONS } from "./questions.js";
 const TOTAL_QUESTIONS = QUESTIONS.length;
 const getTotalRareCards = (total: number): number => {
   if (total >= 50) return 3;

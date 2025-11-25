@@ -17,6 +17,8 @@ export type GameAction =
   | { type: 'SHOW_QUESTION_MENU' }
   /** Chọn một câu hỏi từ menu câu hỏi */
   | { type: 'SELECT_QUESTION'; payload: { id: QuizQuestion["id"] } }
+  /** Bỏ qua lượt trả lời, đến đội khác cướp quyền trả lời */
+  | { type: 'SKIP_TURN'; }
   /** Hiện câu trả lời đúng */
   | { type: 'REVEAL_CORRECT_ANSWER'; payload: { id: QuizQuestion["id"] } }
   /** Quay lại menu câu hỏi */

@@ -6,9 +6,10 @@ import Team from "./team.js";
  */
 export enum GamePhase {
   START_MENU = 'START_MENU',             // Game Menu
-  TEAM_SETUP = 'TEAM_SETUP',
+  TEAM_SETUP = 'TEAM_SETUP',             // Thiết lập đội chơi
   QUESTION_MENU = 'QUESTION_MENU',       // Chọn câu hỏi
-  SHOWING_QUESTION = 'SHOWING_QUESTION', // Đội đang trả lời       
+  SHOWING_QUESTION = 'SHOWING_QUESTION', // Đội đang trả lời
+  STEAL_QUESTION = 'STEAL_QUESTION',     // Đội khác cướp câu hỏi
   REVEALING_ANSWER = 'REVEALING_ANSWER', // Show đáp án đúng
   COMMON_CARD_DRAWING = 'COMMON_CARD_DRAWING',         // Đội đúng gặp bài thường - rút hoặc dừng
   CARD_REVEALED = 'CARD_REVEALED',       // Mới rút bài
@@ -30,9 +31,9 @@ export interface GameState {
   lastDrawnCard?: Card;             // lá vừa bốc (cho hiệu ứng)
   teams?: Team[]; // danh sách đội chơi
   turnOrder?: number[]; // thứ tự lượt chơi (mảng chỉ số đội)
-  currentTurnIndex?: 0, // chỉ số lượt hiện tại trong turnOrder
-  stealingTeamIndex?: null, // chỉ số đội đang cướp câu hỏi (nếu có)
-  attemptedTeamIds?: [] // danh sách ID đội đã thử trả lời câu hỏi hiện tại nhưng sai
+  currentTurnIndex?: number | 0, // chỉ số lượt hiện tại trong turnOrder
+  stealQueue?: number[]; // mảng chỉ số đội chơi trong hàng đợi cướp câu hỏi
+  activeTeamId?: number ; // chỉ số của đội đang trả lời câu hỏi
   createdAt: number;
   updatedAt: number;
   

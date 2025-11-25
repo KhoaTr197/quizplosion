@@ -11,6 +11,7 @@ import SetupScreen from "../ui/screens/setup-screen.js";
 import TeamManager from "./team-manager.js";
 import NewQuestionScreen from "../ui/screens/new-question-screen.js";
 import DeckManager from "./deck-manager.js";
+import Team from "./team.js";
 
 
 /**
@@ -59,7 +60,7 @@ class GameManager {
     const targetScreenId = this.getCurrentScreenId(phase);
 
     // Nếu vẫn đang ở cùng một màn hình → KHÔNG render lại!
-    if (this.lastGameScreen === targetScreenId) {
+    if (this.lastGameScreen === targetScreenId && targetScreenId != 'question-screen') {
       console.log("[GameManager]: Screen không đổi → bỏ qua render");
       return;
     }
@@ -93,6 +94,7 @@ class GameManager {
 
         break;
       }
+      case GamePhase.STEAL_QUESTION:
       case GamePhase.REVEALING_ANSWER:
         break;
       case GamePhase.RARE_CARD_DECISION: {
@@ -123,6 +125,7 @@ class GameManager {
       [GamePhase.TEAM_SETUP]: ScreenId.SETUP,
       [GamePhase.QUESTION_MENU]: ScreenId.QUESTION_MENU,
       [GamePhase.SHOWING_QUESTION]: ScreenId.QUESTION,
+      [GamePhase.STEAL_QUESTION]: ScreenId.QUESTION,
       [GamePhase.REVEALING_ANSWER]: ScreenId.QUESTION,
       [GamePhase.COMMON_CARD_DRAWING]: ScreenId.COMMON_CARD_DRAWING,
       [GamePhase.RARE_CARD_DECISION]: ScreenId.RARE_CARD,
@@ -143,22 +146,54 @@ class GameManager {
           const teams = action.payload.teams;
           console.log('Teams setup complete:', teams);
           TeamManager.instance.setTeams(teams);
-          //xử lý Random thứ tự chơi
+          //setup
           TeamManager.instance.randomTeamsOrder();
-          const order = TeamManager.instance.getTeamsOrder();
-          console.log('Team order:', order);
+          TeamManager.instance.setup();
 
           GameStateManager.instance.setState({
               phase: GamePhase.QUESTION_MENU, 
               teams: teams,
-              turnOrder: order
+              turnOrder: TeamManager.instance.getTurnOrders()
           });
           break;
         }
         case 'SELECT_QUESTION':
+          TeamManager.instance.setup();
+          //debug
+          const order = TeamManager.instance.getTurnOrders();
+          console.log('Team order:', order);
+          const steals = TeamManager.instance.getStealOrders();
+          console.log('steal queue:', steals);
+          //
           GameStateManager.instance.setState({
             phase: GamePhase.SHOWING_QUESTION,
-            currentQuestionId: action.payload.id
+            currentQuestionId: action.payload.id,
+            stealQueue: TeamManager.instance.getStealOrders(),
+            activeTeamId: TeamManager.instance.getActiveTeamId(),
+          });
+          break;
+        case 'SKIP_TURN':
+          const stealQueue = TeamManager.instance.getStealOrders();
+          // Nếu không còn đội nào để cướp nữa → chuyển sang đội tiếp theo và về menu câu hỏi
+          if (stealQueue.length === 0) {
+            console.warn('No team available to steal the question.');
+            TeamManager.instance.nextTurn();
+            const nextIndex = TeamManager.instance.getCurrentTurnIndex();
+            GameStateManager.instance.setState({
+              phase: GamePhase.QUESTION_MENU,
+              currentQuestionId: null,
+              stealQueue: [],
+              currentTurnIndex: nextIndex,
+              activeTeamId: TeamManager.instance.getActiveTeamId()
+            });
+            break;
+          }
+          TeamManager.instance.nextStealTurn();
+          GameStateManager.instance.setState({
+            phase: GamePhase.STEAL_QUESTION,
+            currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
+            activeTeamId: TeamManager.instance.getActiveTeamId(),
+            stealQueue: stealQueue
           });
           break;
         case 'REVEAL_CORRECT_ANSWER':

@@ -2,6 +2,8 @@ import GameStateManager, { GamePhase } from "../../core/game-state-manager.js";
 import { QuizQuestion } from "../../core/questions.js";
 import QuizManager from "../../core/quiz-manager.js";
 import GameDispatcher from "../../game-dispatcher.js";
+import TeamManager from "../../core/team-manager.js";
+import Team from "../../core/team.js";
 
 /**
  * Màn hình câu hỏi
@@ -21,6 +23,7 @@ class NewQuestionScreen {
 
   private closeQuestionBtn = document.querySelector('#new-question-action-bar .action-btn--close') as HTMLElement;
   private nextQuestionBtn = document.querySelector('#new-question-action-bar .action-btn--next') as HTMLElement;
+  private skipTurnBtn = document.querySelector('#new-question-action-bar .action-btn--skip-turn') as HTMLElement;
 
   constructor(questionId: QuizQuestion["id"]) {
     console.log('[QuestionScreen] Question ID - ', questionId);
@@ -36,6 +39,7 @@ class NewQuestionScreen {
     this.renderTurnBar();
     this.renderQuestion();
     this.renderTeamBars();
+    this.renderButtons();
   }
 
   /**
@@ -55,18 +59,18 @@ class NewQuestionScreen {
    * Render thanh theo dõi lượt
    */
   private renderTurnBar(): void {
-    const fakeTurnOrders = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
-
-    fakeTurnOrders.forEach((turnOrder, idx) => {
+    const turnOrders = TeamManager.instance.getTurnOrders();
+    const teams = TeamManager.instance.getTeams();
+    turnOrders.forEach((turnOrder, idx) => {
       const turnOrderSlot = document.createElement('div');
       turnOrderSlot.classList.add("turn-order__slot");
 
-      if (idx == 0) {
+      if (turnOrder == TeamManager.instance.getActiveTeamId()) {
         turnOrderSlot.classList.add("turn-order__slot--active");
-        this.currentTurnEl.textContent = "Team " + turnOrder;
+        this.currentTurnEl.textContent = teams[turnOrder].name;
       }
 
-      turnOrderSlot.textContent = turnOrder;
+      turnOrderSlot.textContent = (turnOrder + 1).toString();
 
       this.turnOrderBarEl.appendChild(turnOrderSlot);
     })
@@ -76,10 +80,10 @@ class NewQuestionScreen {
    * Render thông tin teams ở 2 sidebar
    */
   private renderTeamBars(): void {
-    const fakeTeams = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
-    const middleIdx = Math.ceil((fakeTeams.length / 2) - 1);
+    const teams = TeamManager.instance.getTeams();
+    const middleIdx = Math.ceil((teams.length / 2) - 1);
 
-    fakeTeams.forEach((team, idx) => {
+    teams.forEach((team, idx) => {
       const teamStatus = document.createElement("div");
       const teamNameEl = document.createElement("div");
       const teamScoreEl = document.createElement("div");
@@ -91,8 +95,8 @@ class NewQuestionScreen {
       if (idx == 0)
         teamStatus.classList.add("team--active")
 
-      teamNameEl.textContent = "Team " + team;
-      teamScoreEl.textContent = "0";
+      teamNameEl.textContent = `${team.id + 1}. ${team.name}`;
+      teamScoreEl.textContent = team.score.toString();
 
       teamStatus.appendChild(teamNameEl);
       teamStatus.appendChild(teamScoreEl);
@@ -159,6 +163,16 @@ class NewQuestionScreen {
         })
       }
     };
+    // Nút Bỏ Qua Lượt
+    this.skipTurnBtn.onclick = () => {
+      GameDispatcher.instance.dispatch({
+        type: 'SKIP_TURN',
+      });
+    };
+  }
+  private renderButtons(): void {
+    if(TeamManager.instance.getStealOrders().length == 0) 
+      this.skipTurnBtn.style.display = 'none';
   }
 }
 export default NewQuestionScreen;
