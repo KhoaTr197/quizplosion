@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quizplosion - Rare card</title>
+  <link rel="stylesheet" href="./src/main.css">
+</head>
+
+<body>
+  <div id="game-canvas">
+    <!-- Main content -->
+    <div class="card-slide-container">
+      <div class="card-container card-container--rare">
+        <img class="card__image card__image--back" src="./assets/card_back.png" alt="Card Back">
+        <img class="card__image card__image--rare" src="./assets/card_change.png" alt="Card Change">
+      </div>
+      <div>
+        <p class="text--gradient text--glow text-2xl text--center">YOU FOUND A RARE CARD!</p>
+        <p class="text-xl text--white text--center">Reveal it or get 5 points?</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <img class="action-btn icon-right" src="./assets/menu.png" alt="Menu">
+  </div>
+  <script src="./src/js/rare_card.js"></script>
+</body>
+
+</html>

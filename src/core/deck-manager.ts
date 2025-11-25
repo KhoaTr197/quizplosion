@@ -71,81 +71,7 @@ class DeckManager {
     this.deckType = randomRareCard_Percentage(state.answeredQuestionIds.length);
 
     // Generate bộ bài theo loại
-     if(this.deckType==='Rare'){
-       const backCard = {
-        id: `${BACK_CARD_INFO.name}_${Date.now()}_back`,
-        ...BACK_CARD_INFO,
-        type: PlaceholderCardType.PLACEHOLDER,
-        isBomb: false,
-      }
-      const percentRareCard=Math.random();
-      let RareCard:RareCardType=percentRareCard>=0.6?RareCardType.CHANGE:RareCardType.LOSE_ALL;
-      const info=RARE_CARD_INFO[RareCard];
-      this.deck.push({
-         id: `${RareCard}_${Date.now()}_${1}`,
-          ...info,
-          type: RareCard,
-          isBomb: true,
-      })
-      
-
-    }
-   else if  (this.deckType == "Common") {
-      // Kích thước bộ bài: 1 → 8 lá điểm + 1 lá đặc biệt + 1 bomb/nuclear → tổng 3 → 10 lá
-      const deckSize = Math.floor(Math.random() * 8) + 2;
-
-      // Thêm các lá điểm theo trọng số
-      const pointCards: Card[] = [];
-      for (let i = 0; i < deckSize - 1; i++) {
-        const pointType = this.randomPointCard();
-        const info = COMMON_POINT_CARD_INFO[pointType];
-        pointCards.push({
-          id: `${pointType}_${Date.now()}_${i}`,
-          ...info,
-          type: pointType,
-          isBomb: false,
-        });
-      }
-
-      // Xào tạm các lá điểm trước khi chèn lá đặc biệt
-      this.shuffle(pointCards);
-
-      // Chèn ngẫu nhiên 1 lá chức năng ×2 hoặc ÷2
-      const specialType: CommonSpecialCardType =
-        Math.random() > 0.5 ?
-          CommonSpecialCardType.MULTIPLE :
-          CommonSpecialCardType.DIVIDE;
-      const specialInfo = COMMON_SPECIAL_CARD_INFO[specialType];
-      const insertPos = Math.floor(Math.random() * (pointCards.length)) + 1;
-      pointCards.splice(insertPos, 0, {
-        id: `${specialType}_${Date.now()}_special`,
-        ...specialInfo,
-        type: specialType,
-        isBomb: false,
-      });
-
-      // Thêm lá bomb/nuclear vào cuối cùng
-      const bombType: CommonSpecialCardType =
-        Math.random() > 0.25 ?
-          CommonSpecialCardType.BOMB :
-          CommonSpecialCardType.NUCLEAR;
-      const bombInfo = COMMON_SPECIAL_CARD_INFO[bombType];
-      const bombCard = {
-        id: `${bombType}_${Date.now()}_bomb`,
-        ...bombInfo,
-        type: bombType,
-        isBomb: true,
-      };
-
-      const backCard = {
-        id: `${BACK_CARD_INFO.name}_${Date.now()}_back`,
-        ...BACK_CARD_INFO,
-        type: PlaceholderCardType.PLACEHOLDER,
-        isBomb: false,
-      }
-
-      this.deck = [bombCard, ...pointCards, backCard];
-    }
+    this.generateDeckByType(this.deckType);
   }
   /**
    * Chọn ngẫu nhiên một lá điểm theo tỷ lệ trọng số
@@ -235,6 +161,82 @@ class DeckManager {
       const color = card.isBomb ? "#ff0000" : "#00ff00";
       console.log(`%c ${i + 1}. ${card.name} ${card.isBomb ? "BOOM" : ""}`, `color: ${color}`);
     });
+  }
+  public generateDeckByType(deckType: DeckType) {
+    if(deckType === "Rare"){
+      const backCard = {
+        id: `${BACK_CARD_INFO.name}_${Date.now()}_back`,
+        ...BACK_CARD_INFO, 
+        type: PlaceholderCardType.PLACEHOLDER,
+        isBomb: false,
+      }
+      this.deck.push(backCard);
+      const percentRareCard=Math.random();
+      let RareCard:RareCardType=percentRareCard>=0.6?RareCardType.CHANGE:RareCardType.LOSE_ALL;
+      const info=RARE_CARD_INFO[RareCard];
+      this.deck.push({
+         id: `${RareCard}_${Date.now()}_${1}`,
+          ...info,
+          type: RareCard,
+          isBomb: true,
+      })
+    }
+    else if  (deckType == "Common") {
+      // Kích thước bộ bài: 1 → 8 lá điểm + 1 lá đặc biệt + 1 bomb/nuclear → tổng 3 → 10 lá
+      const deckSize = Math.floor(Math.random() * 8) + 2;
+
+      // Thêm các lá điểm theo trọng số
+      const pointCards: Card[] = [];
+      for (let i = 0; i < deckSize - 1; i++) {
+        const pointType = this.randomPointCard();
+        const info = COMMON_POINT_CARD_INFO[pointType];
+        pointCards.push({
+          id: `${pointType}_${Date.now()}_${i}`,
+          ...info,
+          type: pointType,
+          isBomb: false,
+        });
+      }
+
+      // Xào tạm các lá điểm trước khi chèn lá đặc biệt
+      this.shuffle(pointCards);
+
+      // Chèn ngẫu nhiên 1 lá chức năng ×2 hoặc ÷2
+      const specialType: CommonSpecialCardType =
+        Math.random() > 0.5 ?
+          CommonSpecialCardType.MULTIPLE :
+          CommonSpecialCardType.DIVIDE;
+      const specialInfo = COMMON_SPECIAL_CARD_INFO[specialType];
+      const insertPos = Math.floor(Math.random() * (pointCards.length)) + 1;
+      pointCards.splice(insertPos, 0, {
+        id: `${specialType}_${Date.now()}_special`,
+        ...specialInfo,
+        type: specialType,
+        isBomb: false,
+      });
+
+      // Thêm lá bomb/nuclear vào cuối cùng
+      const bombType: CommonSpecialCardType =
+        Math.random() > 0.25 ?
+          CommonSpecialCardType.BOMB :
+          CommonSpecialCardType.NUCLEAR;
+      const bombInfo = COMMON_SPECIAL_CARD_INFO[bombType];
+      const bombCard = {
+        id: `${bombType}_${Date.now()}_bomb`,
+        ...bombInfo,
+        type: bombType,
+        isBomb: true,
+      };
+
+      const backCard = {
+        id: `${BACK_CARD_INFO.name}_${Date.now()}_back`,
+        ...BACK_CARD_INFO,
+        type: PlaceholderCardType.PLACEHOLDER,
+        isBomb: false,
+      }
+
+      this.deck = [bombCard, ...pointCards, backCard];
+    }
   }
 }
 

@@ -7,10 +7,11 @@ import QuestionScreen from "../ui/screens/question-screen.js";
 import PersistentUI from "../ui/persistent-ui-manager.js";
 import CardDrawingScreen from "../ui/screens/card-drawing-screen.js";
 import AudioManager from "./audio-manager.js";
+import SetupScreen from "../ui/screens/setup-screen.js";
+import TeamManager from "./team-manager.js";
 import NewQuestionScreen from "../ui/screens/new-question-screen.js";
 import DeckManager from "./deck-manager.js";
-import TeamManager from "./team-manager.js";
-import SetupScreen from "../ui/screens/setup-screen.js";
+import RareCardScreen from "../ui/screens/rare-card-screen.js";
 
 
 /**
@@ -76,6 +77,11 @@ class GameManager {
 
         break;
       }
+      case GamePhase.TEAM_SETUP: {
+        UI.show(ScreenId.SETUP);
+        (new SetupScreen).render();
+        break;
+      }
       case GamePhase.QUESTION_MENU: {
         UI.show(ScreenId.QUESTION_MENU);
         (new QuestionMenuScreen).render();
@@ -97,9 +103,12 @@ class GameManager {
 
         break;
       }
+      case GamePhase.STEAL_QUESTION:
       case GamePhase.REVEALING_ANSWER:
         break;
       case GamePhase.RARE_CARD_DECISION: {
+        UI.show(ScreenId.RARE_CARD);
+        (new RareCardScreen).render();
         break;
       }
       case GamePhase.COMMON_CARD_DRAWING: {
@@ -124,6 +133,7 @@ class GameManager {
   private getCurrentScreenId(phase: GamePhase): ScreenId {
     const map: Partial<Record<GamePhase, ScreenId>> = {
       [GamePhase.START_MENU]: ScreenId.START_MENU,
+      [GamePhase.TEAM_SETUP]: ScreenId.SETUP,
       [GamePhase.QUESTION_MENU]: ScreenId.QUESTION_MENU,
       [GamePhase.TEAM_SETUP]: ScreenId.SETUP,
       [GamePhase.SHOWING_QUESTION]: ScreenId.QUESTION,
@@ -148,10 +158,11 @@ class GameManager {
           const teams = action.payload.teams;
 
           TeamManager.instance.setUpTeams(teams);
-          console.log('[GameManager] Phase - FINISH_TEAM_SETUP:', TeamManager.instance.getTeams());
+          console.log('[GameManager] Phase - FINISH_TEAM_SETUP:');
+          TeamManager.instance.logCurrentTeamSession();
 
-          // TeamManager.instance.shuffleOrders();
-          // TeamManager.instance.newRound();
+          TeamManager.instance.shuffleOrders();
+          TeamManager.instance.newRound();
 
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
@@ -164,7 +175,7 @@ class GameManager {
             phase: GamePhase.SHOWING_QUESTION,
             currentQuestionId: action.payload.id,
             turnOrder: TeamManager.instance.getTurnOrder(),
-            currentTurnIndex: 0,
+            currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
             stealQueue: TeamManager.instance.getStealQueue(),
           });
           break;
@@ -181,14 +192,7 @@ class GameManager {
               stealQueue: [],
               currentTurnIndex: nextIndex,
             });
-            break;
           }
-          TeamManager.instance.nextStealTurn();
-          GameStateManager.instance.setState({
-            phase: GamePhase.STEAL_QUESTION,
-            currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
-            stealQueue: stealQueue
-          });
           break;
         case 'REVEAL_CORRECT_ANSWER':
           GameStateManager.instance.setState({
@@ -207,9 +211,13 @@ class GameManager {
           break;
         case 'RETURN_TO_QUESTION_MENU':
           TeamManager.instance.newRound();
+          TeamManager.instance.logCurrentTeamSession();
+
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
-            currentQuestionId: null
+            currentQuestionId: null,
+            stealQueue: TeamManager.instance.getStealQueue(),
+            currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
 
           })
           DeckManager.instance.reset();
@@ -217,6 +225,11 @@ class GameManager {
         case 'BEGIN_COMMON_CARD_DRAWING':
           GameStateManager.instance.setState({
             phase: GamePhase.COMMON_CARD_DRAWING,
+          })
+          break;
+        case 'SHOW_RARE_CARD_SCREEN':
+          GameStateManager.instance.setState({
+            phase: GamePhase.RARE_CARD_DECISION,
           })
           break;
         case 'RESET_GAME':

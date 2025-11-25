@@ -30,6 +30,18 @@
         </div>
       </div>
     </div>
+    
+    <!--SETUP-->
+    <div id="setup-screen" class="screen">
+      <h2 class="text--white text--glow text--center text-2xl">Game Setup</h2>
+        <div class="input-group">
+            <label>Number of teams:</label>
+            <input type="number" id="num-teams" min="2" max="10" value="3" onchange="renderTeamInputs()">
+        </div>
+        <div id="team-names-area"></div>
+        <button id="play-btn">Play</button>
+        <button>Return</button>
+    </div>
 
     <!--SETUP-->
     <div id="setup-screen" class="screen">
@@ -151,7 +163,7 @@
       </div>
 
       <!-- Action Buttons -->
-      <img class="action-btn icon-right" src="./assets/menu.png" alt="Menu">
+      <img class="action-btn icon-right" id="questionmenu-btn" src="./assets/menu.png" alt="Menu">
     </div>
 
     <!--SLIDE CARD-->

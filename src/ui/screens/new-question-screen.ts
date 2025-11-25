@@ -3,6 +3,7 @@ import { QuizQuestion } from "../../core/questions.js";
 import QuizManager from "../../core/quiz-manager.js";
 import GameDispatcher from "../../game-dispatcher.js";
 import TeamManager from "../../core/team-manager.js";
+import DeckManager from "../../core/deck-manager.js";
 
 /**
  * Màn hình câu hỏi
@@ -158,7 +159,7 @@ class NewQuestionScreen {
       const phase = GameStateManager.instance.getState().phase;
 
       // Hiện đáp án
-      if (phase === GamePhase.SHOWING_QUESTION) {
+      if (phase === GamePhase.SHOWING_QUESTION || phase == GamePhase.STEAL_QUESTION) {
         this.correctAnswerEl.classList.add('active');
 
         console.log(this.questionId);
@@ -169,9 +170,18 @@ class NewQuestionScreen {
         });
       }
       else if (phase === GamePhase.REVEALING_ANSWER) {
-        GameDispatcher.instance.dispatch({
-          type: 'BEGIN_COMMON_CARD_DRAWING',
-        })
+        if (DeckManager.instance.type == 'Rare') {
+          GameDispatcher.instance.dispatch({
+            type: 'SHOW_RARE_CARD_SCREEN',
+          })
+        } else {
+          GameDispatcher.instance.dispatch({
+            type: 'BEGIN_COMMON_CARD_DRAWING',
+          })
+        }
+        // GameDispatcher.instance.dispatch({
+        //   type: 'SHOW_RARE_CARD_SCREEN',
+        // })
       }
     };
     // Nút Bỏ Qua Lượt
