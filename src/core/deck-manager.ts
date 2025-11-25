@@ -13,8 +13,8 @@ import {
   randomRareCard_Percentage
 } from './random.js'
 import
-  GameStateManager
-from "./game-state-manager.js"
+GameStateManager
+  from "./game-state-manager.js"
 /**
  * Interface của một thẻ bài trong bộ bài
  */
@@ -62,11 +62,11 @@ class DeckManager {
    */
   private initializeDeck(): void {
     const state = GameStateManager.instance.getState();
-    
+
     // Reset deck
     this.deck = [];
 
-    // TODO: Thêm thuật toán random loại deck
+    // Thuật toán random loại deck
 
     this.deckType = randomRareCard_Percentage(state.answeredQuestionIds.length);
 
@@ -163,25 +163,25 @@ class DeckManager {
     });
   }
   public generateDeckByType(deckType: DeckType) {
-    if(deckType === "Rare"){
+    if (deckType === "Rare") {
       const backCard = {
         id: `${BACK_CARD_INFO.name}_${Date.now()}_back`,
-        ...BACK_CARD_INFO, 
+        ...BACK_CARD_INFO,
         type: PlaceholderCardType.PLACEHOLDER,
         isBomb: false,
       }
       this.deck.push(backCard);
-      const percentRareCard=Math.random();
-      let RareCard:RareCardType=percentRareCard>=0.6?RareCardType.CHANGE:RareCardType.LOSE_ALL;
-      const info=RARE_CARD_INFO[RareCard];
+      const percentRareCard = Math.random();
+      let RareCard: RareCardType = percentRareCard >= 0.6 ? RareCardType.CHANGE : RareCardType.LOSE_ALL;
+      const info = RARE_CARD_INFO[RareCard];
       this.deck.push({
-         id: `${RareCard}_${Date.now()}_${1}`,
-          ...info,
-          type: RareCard,
-          isBomb: true,
+        id: `${RareCard}_${Date.now()}_${1}`,
+        ...info,
+        type: RareCard,
+        isBomb: true,
       })
     }
-    else if  (deckType == "Common") {
+    else if (deckType == "Common") {
       // Kích thước bộ bài: 1 → 8 lá điểm + 1 lá đặc biệt + 1 bomb/nuclear → tổng 3 → 10 lá
       const deckSize = Math.floor(Math.random() * 8) + 2;
 

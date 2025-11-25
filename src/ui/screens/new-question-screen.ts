@@ -35,50 +35,42 @@ class NewQuestionScreen {
    * Hiển thị màn hình
    */
   public render(): void {
-    this.clearContent();
+    //hiện lại nút bỏ lượt
+    this.skipTurnBtn.style.display = 'initial';
+
     this.renderTurnBar();
     this.renderQuestion();
     this.renderTeamBars();
   }
 
   /**
-   * Xóa nội dung cũ trước khi render lại
-   */
-  private clearContent(): void {
-    this.turnOrderBarEl.innerHTML = '';
-    this.teamBarLeftEl.innerHTML = '';
-    this.teamBarRightEl.innerHTML = '';
-    this.answersEl.innerHTML = '';
-    this.correctAnswerEl.textContent = '';
-    this.correctAnswerEl.classList.remove('active');
-    this.currentTurnEl.textContent = '';
-  }
-
-  /**
    * Render thanh theo dõi lượt
    */
   private renderTurnBar(): void {
+    this.turnOrderBarEl.innerHTML = '';
+    this.currentTurnEl.textContent = '';
+
     const state = GameStateManager.instance.getState();
-    const { turnOrder } = state;
+    const { turnOrder, currentTurnIndex } = state;
 
     if (!turnOrder) {
-      console.warn("[NewQuestioScreen] Không thể render turn bar vì dữ liệu cần dùng không tồn tại");
+      console.warn("[NewQuestionScreen] Không thể render turn bar vì dữ liệu cần dùng không tồn tại");
       return;
     }
 
-    console.log("[NewQuestioScreen] State: ", state);
+    console.log("[NewQuestionScreen] State: ", state);
 
-    turnOrder.forEach((turn, idx) => {
+    turnOrder.forEach((turnId, idx) => {
       const turnOrderSlot = document.createElement('div');
       turnOrderSlot.classList.add("turn-order__slot");
-      const currentTurnTeam = TeamManager.instance.getTeamById(turn);
+      const teamInfo = TeamManager.instance.getTeamById(turnId);
 
-      if (idx === 0) {
+      if (idx === currentTurnIndex) {
         turnOrderSlot.classList.add("turn-order__slot--active");
-        this.currentTurnEl.textContent = currentTurnTeam!.name;
+        this.currentTurnEl.textContent = teamInfo!.name;
       }
 
-      turnOrderSlot.textContent = currentTurnTeam!.name.substring(currentTurnTeam!.name.lastIndexOf(' ') + 1);
+      turnOrderSlot.textContent = teamInfo!.name.substring(teamInfo!.name.lastIndexOf(' ') + 1);
 
       this.turnOrderBarEl.appendChild(turnOrderSlot);
     })
@@ -88,7 +80,16 @@ class NewQuestionScreen {
    * Render thông tin teams ở 2 sidebar
    */
   private renderTeamBars(): void {
-    const teams = TeamManager.instance.getTeams();
+    this.teamBarLeftEl.innerHTML = '';
+    this.teamBarRightEl.innerHTML = '';
+
+    const { teams } = GameStateManager.instance.getState();
+
+    if (!teams) {
+      console.warn("[NewQuestionScreen] Không thể render team bars vì dữ liệu cần dùng không tồn tại");
+      return;
+    }
+
     const middleIdx = Math.ceil((teams.length / 2) - 1);
 
     teams.forEach((team, idx) => {
@@ -100,7 +101,9 @@ class NewQuestionScreen {
       teamNameEl.classList.add("team__name");
       teamScoreEl.classList.add("team__score");
 
-      if (idx == 0)
+      //console.log("[NewQuestionScreen]", team.id, TeamManager.instance.getCurrentTeam()!.id, team.id === TeamManager.instance.getCurrentTeam()?.id)
+
+      if (team.id === TeamManager.instance.getCurrentTeam()?.id)
         teamStatus.classList.add("team--active")
 
       teamNameEl.textContent = team.name;
@@ -120,6 +123,10 @@ class NewQuestionScreen {
    * Render câu hỏi
    */
   private renderQuestion(): void {
+    this.correctAnswerEl.textContent = '';
+    this.correctAnswerEl.classList.remove('active');
+    this.answersEl.innerHTML = '';
+
     const question = QuizManager.instance.pickById(this.questionId);
     if (!question) return;
 
@@ -136,7 +143,6 @@ class NewQuestionScreen {
     });
 
     this.correctAnswerEl.textContent = `Đáp án đúng: ${question.answers[question.correct]}`;
-    this.correctAnswerEl.classList.remove('active');
   }
 
   /**
@@ -145,13 +151,22 @@ class NewQuestionScreen {
   private bindEvents(): void {
     // Nút Đóng
     this.closeQuestionBtn.onclick = () => {
-      GameDispatcher.instance.dispatch({
-        type: 'RETURN_TO_QUESTION_MENU',
-      });
+      const phase = GameStateManager.instance.getState().phase;
+      // Hiện đáp án
+      if (phase === GamePhase.SHOWING_QUESTION || phase == GamePhase.STEAL_QUESTION) {
+        this.correctAnswerEl.classList.add('active');
 
-      QuizManager.instance.answerById(this.questionId);
-      //hiện lại nút bỏ lượt
-      this.skipTurnBtn.style.display = 'initial';
+        GameDispatcher.instance.dispatch({
+          type: 'REVEAL_CORRECT_ANSWER',
+          payload: { id: this.questionId }
+        });
+      } //ngược lại, về menu câu hỏi 
+      else if (phase === GamePhase.REVEALING_ANSWER) {
+        GameDispatcher.instance.dispatch({
+          type: 'RETURN_TO_QUESTION_MENU',
+        });
+        QuizManager.instance.answerById(this.questionId);
+      }
     }
 
     // Nút Hiện Câu Trả Lời, click thêm lần nữa sẽ chuyển trang rút bài
@@ -161,8 +176,6 @@ class NewQuestionScreen {
       // Hiện đáp án
       if (phase === GamePhase.SHOWING_QUESTION || phase == GamePhase.STEAL_QUESTION) {
         this.correctAnswerEl.classList.add('active');
-
-        console.log(this.questionId);
 
         GameDispatcher.instance.dispatch({
           type: 'REVEAL_CORRECT_ANSWER',
@@ -179,21 +192,21 @@ class NewQuestionScreen {
             type: 'BEGIN_COMMON_CARD_DRAWING',
           })
         }
-        // GameDispatcher.instance.dispatch({
-        //   type: 'SHOW_RARE_CARD_SCREEN',
-        // })
       }
     };
+
     // Nút Bỏ Qua Lượt
     this.skipTurnBtn.onclick = () => {
       if (TeamManager.instance.getStealQueue().length == 1) {
         this.skipTurnBtn.style.display = 'none';
       }
+
       GameDispatcher.instance.dispatch({
         type: 'SKIP_TURN',
       });
-      this.turnOrderBarEl.innerHTML = '';
+
       this.renderTurnBar();
+      this.renderTeamBars();
     };
   }
 }

@@ -96,12 +96,14 @@ class TeamManager {
       const j = Math.floor(Math.random() * (i + 1));
       [this.turnOrder[i], this.turnOrder[j]] = [this.turnOrder[j], this.turnOrder[i]];
     }
+    this.prepareStealQueue();
   }
 
   /**
    * Chuẩn bị hàng đợi cướp lượt (theo thứ tự top-down, bỏ qua đội chính)
+   * @private
    */
-  public prepareStealQueue(): void {
+  private prepareStealQueue(): void {
     this.stealQueue = [];
     const len = this.turnOrder.length;
     if (len <= 1) return;
@@ -110,13 +112,6 @@ class TeamManager {
       const idx = (this.currentTurnIndex + i) % len;
       this.stealQueue.push(this.turnOrder[idx]);
     }
-  }
-
-  /**
-   * Cập nhật các thuộc tính cho vòng trả lời câu hỏi mới
-   */
-  public newRound(): void {
-    this.stealQueue = this.turnOrder.filter((_, idx) => idx !== this.currentTurnIndex);
   }
 
   /** 
@@ -153,7 +148,7 @@ class TeamManager {
    * 
    * @returns Mảng các team (readonly)
    */
-  public getTeams(): Readonly<Team[]> {
+  public getTeams(): Team[] {
     return structuredClone(this.teams);
   }
 
@@ -180,6 +175,8 @@ class TeamManager {
    * Lấy thông tin đội đang đến lượt
    */
   public getCurrentTeam(): Team | undefined {
+    console.log("[TeamManager]", this.turnOrder, this.currentTurnIndex)
+
     return this.getTeamById(this.turnOrder[this.currentTurnIndex]);
   }
 
@@ -226,14 +223,29 @@ class TeamManager {
    * Chuyển lượt (dành cho lượt cướp)
    */
   public nextStealTurn(): boolean {
-    if (this.stealQueue.length === 0) return false; // Hết người cướp
+    if (this.stealQueue.length === 0) return false; // Hết team cướp
 
     const nextTeamId = this.stealQueue.shift()!;
     // Tìm index của team vừa cướp để set currentTurnIndex
     const idx = this.turnOrder.indexOf(nextTeamId);
+
+    console.log(this.currentTurnIndex, nextTeamId, this.stealQueue)
+
     if (idx !== -1) this.currentTurnIndex = idx;
 
     return true;
+  }
+
+  /**
+   * Debug: In ra bộ bài vừa tạo
+   */
+  public logCurrentTeamSession(): void {
+    console.log('Main Order:', this.turnOrder.map(id => this.getTeamById(id)?.name).join(' → '));
+    console.log('Current Main Index:', this.currentTurnIndex);
+    console.log('Active Team:', this.getCurrentTeam()?.name);
+    console.log('Steal Queue:', this.stealQueue.map(id => this.getTeamById(id)?.name).join(' → '));
+    console.log('Scores:', this.teams.map(t => `${t.name}: ${t.score}`).join(' | '));
+    console.log('---');
   }
 }
 

@@ -18,7 +18,7 @@ class QuestionMenuScreen {
     this.container.innerHTML = '';
     this.currentTeamName.innerHTML = '';
 
-    const currentTeam = TeamManager.instance.getTeamById(TeamManager.instance.getActiveTeamId());
+    const currentTeam = TeamManager.instance.getCurrentTeam();
     this.currentTeamName.innerHTML = currentTeam ? currentTeam.name : "Team name";
 
     QuizManager.instance.questions.forEach((q, idx) => {
