@@ -11,7 +11,6 @@ import SetupScreen from "../ui/screens/setup-screen.js";
 import TeamManager from "./team-manager.js";
 import NewQuestionScreen from "../ui/screens/new-question-screen.js";
 import DeckManager from "./deck-manager.js";
-import Team from "./team.js";
 
 
 /**
