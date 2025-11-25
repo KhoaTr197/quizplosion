@@ -10,6 +10,7 @@ import AudioManager from "./audio-manager.js";
 import NewQuestionScreen from "../ui/screens/new-question-screen.js";
 import DeckManager from "./deck-manager.js";
 import TeamManager from "./team-manager.js";
+import SetupScreen from "../ui/screens/setup-screen.js";
 
 
 /**
@@ -81,13 +82,21 @@ class GameManager {
 
         break;
       }
+      case GamePhase.TEAM_SETUP: {
+        UI.show(ScreenId.SETUP);
+        (new SetupScreen).render();
+        break;
+      }
       case GamePhase.SHOWING_QUESTION: {
+
+        console.log('[Game Manager] Turn Order:', TeamManager.instance.getTurnOrder());
+        console.log('[Game Manager] Teams:', TeamManager.instance);
+
         UI.show(ScreenId.NEW_QUESTION);
         (new NewQuestionScreen(state.currentQuestionId!)).render();
 
         break;
       }
-      case GamePhase.STEAL_QUESTION:
       case GamePhase.REVEALING_ANSWER:
         break;
       case GamePhase.RARE_CARD_DECISION: {
@@ -116,6 +125,7 @@ class GameManager {
     const map: Partial<Record<GamePhase, ScreenId>> = {
       [GamePhase.START_MENU]: ScreenId.START_MENU,
       [GamePhase.QUESTION_MENU]: ScreenId.QUESTION_MENU,
+      [GamePhase.TEAM_SETUP]: ScreenId.SETUP,
       [GamePhase.SHOWING_QUESTION]: ScreenId.QUESTION,
       [GamePhase.STEAL_QUESTION]: ScreenId.QUESTION,
       [GamePhase.REVEALING_ANSWER]: ScreenId.QUESTION,
@@ -132,40 +142,34 @@ class GameManager {
     GameDispatcher.instance.subscribe((action: GameAction) => {
       switch (action.type) {
         case 'START_GAME':
-          GameStateManager.instance.setState({ phase: GamePhase.QUESTION_MENU });
+          GameStateManager.instance.setState({ phase: GamePhase.TEAM_SETUP });
           break;
         case 'FINISH_TEAM_SETUP': {
           const teams = action.payload.teams;
-          console.log('Teams setup complete:', teams);
-          TeamManager.instance.setTeams(teams);
-          //setup
-          TeamManager.instance.randomTeamsOrder();
-          TeamManager.instance.setup();
+
+          TeamManager.instance.setUpTeams(teams);
+          console.log('[GameManager] Phase - FINISH_TEAM_SETUP:', TeamManager.instance.getTeams());
+
+          // TeamManager.instance.shuffleOrders();
+          // TeamManager.instance.newRound();
 
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
             teams: teams,
-            turnOrder: TeamManager.instance.getTurnOrders()
           });
           break;
         }
         case 'SELECT_QUESTION':
-          TeamManager.instance.setup();
-          //debug
-          const order = TeamManager.instance.getTurnOrders();
-          console.log('Team order:', order);
-          const steals = TeamManager.instance.getStealOrders();
-          console.log('steal queue:', steals);
-          //
           GameStateManager.instance.setState({
             phase: GamePhase.SHOWING_QUESTION,
             currentQuestionId: action.payload.id,
-            stealQueue: TeamManager.instance.getStealOrders(),
-            activeTeamId: TeamManager.instance.getActiveTeamId(),
+            turnOrder: TeamManager.instance.getTurnOrder(),
+            currentTurnIndex: 0,
+            stealQueue: TeamManager.instance.getStealQueue(),
           });
           break;
         case 'SKIP_TURN':
-          const stealQueue = TeamManager.instance.getStealOrders();
+          const stealQueue = TeamManager.instance.getStealQueue();
           // Nếu không còn đội nào để cướp nữa → chuyển sang đội tiếp theo và về menu câu hỏi
           if (stealQueue.length === 0) {
             console.warn('No team available to steal the question.');
@@ -176,7 +180,6 @@ class GameManager {
               currentQuestionId: null,
               stealQueue: [],
               currentTurnIndex: nextIndex,
-              activeTeamId: TeamManager.instance.getActiveTeamId()
             });
             break;
           }
@@ -184,7 +187,6 @@ class GameManager {
           GameStateManager.instance.setState({
             phase: GamePhase.STEAL_QUESTION,
             currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
-            activeTeamId: TeamManager.instance.getActiveTeamId(),
             stealQueue: stealQueue
           });
           break;
@@ -204,6 +206,7 @@ class GameManager {
           })
           break;
         case 'RETURN_TO_QUESTION_MENU':
+          TeamManager.instance.newRound();
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
             currentQuestionId: null

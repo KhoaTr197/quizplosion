@@ -3,7 +3,6 @@ import { QuizQuestion } from "../../core/questions.js";
 import QuizManager from "../../core/quiz-manager.js";
 import GameDispatcher from "../../game-dispatcher.js";
 import TeamManager from "../../core/team-manager.js";
-import Team from "../../core/team.js";
 
 /**
  * Màn hình câu hỏi
@@ -58,21 +57,27 @@ class NewQuestionScreen {
    * Render thanh theo dõi lượt
    */
   private renderTurnBar(): void {
-    console.log("render turn bar");
-    const turnOrders = TeamManager.instance.getTurnOrders();
-    const teams = TeamManager.instance.getTeams();
-    console.log("turn orders: ", turnOrders);
-    console.log("active team id: ", TeamManager.instance.getActiveTeamId());
-    turnOrders.forEach((turnOrder, idx) => {
+    const state = GameStateManager.instance.getState();
+    const { turnOrder } = state;
+
+    if (!turnOrder) {
+      console.warn("[NewQuestioScreen] Không thể render turn bar vì dữ liệu cần dùng không tồn tại");
+      return;
+    }
+
+    console.log("[NewQuestioScreen] State: ", state);
+
+    turnOrder.forEach((turn, idx) => {
       const turnOrderSlot = document.createElement('div');
       turnOrderSlot.classList.add("turn-order__slot");
+      const currentTurnTeam = TeamManager.instance.getTeamById(turn);
 
-      if (turnOrder == TeamManager.instance.getActiveTeamId()) {
+      if (idx === 0) {
         turnOrderSlot.classList.add("turn-order__slot--active");
-        this.currentTurnEl.textContent = teams[turnOrder].name;
+        this.currentTurnEl.textContent = currentTurnTeam!.name;
       }
 
-      turnOrderSlot.textContent = (turnOrder + 1).toString();
+      turnOrderSlot.textContent = currentTurnTeam!.name.substring(currentTurnTeam!.name.lastIndexOf(' ') + 1);
 
       this.turnOrderBarEl.appendChild(turnOrderSlot);
     })
@@ -97,7 +102,7 @@ class NewQuestionScreen {
       if (idx == 0)
         teamStatus.classList.add("team--active")
 
-      teamNameEl.textContent = `${team.id + 1}. ${team.name}`;
+      teamNameEl.textContent = team.name;
       teamScoreEl.textContent = team.score.toString();
 
       teamStatus.appendChild(teamNameEl);
@@ -140,7 +145,7 @@ class NewQuestionScreen {
     // Nút Đóng
     this.closeQuestionBtn.onclick = () => {
       GameDispatcher.instance.dispatch({
-        type: 'SHOW_QUESTION_MENU',
+        type: 'RETURN_TO_QUESTION_MENU',
       });
 
       QuizManager.instance.answerById(this.questionId);
@@ -171,7 +176,7 @@ class NewQuestionScreen {
     };
     // Nút Bỏ Qua Lượt
     this.skipTurnBtn.onclick = () => {
-      if(TeamManager.instance.getStealOrders().length == 1){
+      if (TeamManager.instance.getStealQueue().length == 1) {
         this.skipTurnBtn.style.display = 'none';
       }
       GameDispatcher.instance.dispatch({

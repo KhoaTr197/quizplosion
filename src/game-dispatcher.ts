@@ -1,6 +1,6 @@
 import { Card } from "./core/cards.js";
 import { QuizQuestion } from "./core/questions.js";
-import Team from "./core/team.js";
+import { Team } from "./core/team-manager.js";
 
 /**
  * Các hành động (action) mà hệ thống hỗ trợ.

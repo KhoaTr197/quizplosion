@@ -1,6 +1,3 @@
-import GameStateManager, { GamePhase } from "../../core/game-state-manager.js";
-import { QuizQuestion } from "../../core/questions.js";
-import QuizManager from "../../core/quiz-manager.js";
 import GameDispatcher from "../../game-dispatcher.js";
 
 /**
@@ -58,11 +55,11 @@ class SetupScreen {
     this.playBtn.addEventListener('click', () => {
       const inputs = document.querySelectorAll('.team-name-input');
       const teams: { id: number; name: string; score: number }[] = [];
-      
+
       inputs.forEach((el, idx) => {
         const input = el as HTMLInputElement;
         teams.push({
-          id: idx, 
+          id: idx,
           name: input.value || `Đội ${idx + 1}`,
           score: 0
         });
@@ -84,7 +81,7 @@ class SetupScreen {
       div.className = 'input-group';
       div.innerHTML = `
         <label>Team name ${i}:</label>
-        <input type="text" class="team-name-input" id="team-name-${i}" placeholder="Team ${i}" value="Team ${String.fromCharCode(65+i-1)}">
+        <input type="text" class="team-name-input" id="team-name-${i}" placeholder="Team ${i}" value="Team ${String.fromCharCode(65 + i - 1)}">
       `;
       this.teamNamesArea.appendChild(div);
     }

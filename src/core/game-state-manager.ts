@@ -1,5 +1,5 @@
 import { Card } from "./cards.js";
-import Team from "./team.js";
+import { Team } from "./team-manager.js";
 
 /**
  * Các giai đoạn (phase) chính của trò chơi
@@ -24,16 +24,15 @@ export enum GamePhase {
 export interface GameState {
   version: number;
   phase: GamePhase;
-  currentQuestionId?: number | null;       // câu hỏi hiện tại
+  currentQuestionId: number | null;       // câu hỏi hiện tại
   answeredQuestionIds: number[];        // câu hỏi đã trả lời
-  lastAnsweredQuestionId?: number;  // câu hỏi cuối trả lời
+  lastAnsweredQuestionId: number | null;  // câu hỏi cuối trả lời
   drawnCardsThisTurn: Card[];       // lá bài đã bốc trong lượt này (hiển thị animation)
   lastDrawnCard?: Card;             // lá vừa bốc (cho hiệu ứng)
-  teams?: Team[]; // danh sách đội chơi
-  turnOrder?: number[]; // thứ tự lượt chơi (mảng chỉ số đội)
-  currentTurnIndex?: number | 0, // chỉ số lượt hiện tại trong turnOrder
-  stealQueue?: number[]; // mảng chỉ số đội chơi trong hàng đợi cướp câu hỏi
-  activeTeamId?: number; // chỉ số của đội đang trả lời câu hỏi
+  teams: Team[] | null; // danh sách đội chơi
+  turnOrder: number[] | null; // thứ tự lượt chơi (mảng chỉ số đội)
+  currentTurnIndex: number | null, // chỉ số lượt hiện tại trong turnOrder
+  stealQueue: number[] | null; // mảng chỉ số đội chơi trong hàng đợi cướp câu hỏi
   createdAt: number;
   updatedAt: number;
 }
@@ -72,9 +71,16 @@ class GameStateManager {
       version: CURRENT_VERSION,
       phase: GamePhase.START_MENU,
       answeredQuestionIds: [],
+      currentQuestionId: null,
+      lastAnsweredQuestionId: null,
       drawnCardsThisTurn: [],
+      teams: null,
+      turnOrder: null,
+      currentTurnIndex: null,
+      stealQueue: null,
       createdAt: Date.now(),
       updatedAt: Date.now(),
+
     };
   }
 
