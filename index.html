@@ -1,153 +1,208 @@
 <!DOCTYPE html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quizplosion - Game</title>
+    <link rel="stylesheet" href="./src/styles/main.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quizplosion - Game</title>
-  <link rel="stylesheet" href="./src/styles/main.css">
-</head>
-
-<body>
-  <div id="game-canvas">
-    <button id="reset-btn">RESET STATE</button>
-    <!--MAIN MENU-->
-    <div id="start-menu-screen" class="screen">
-      <div class="menu-container">
-        <div class="menu-buttons">
-          <button class="menu-button" id="start-btn">Bắt đầu trò chơi</button>
-          <button class="menu-button" id="guide-btn">Hướng dẫn</button>
-        </div>
-      </div>
-    </div>
-
-    <!--QUESTION MENU-->
-    <div id="question-menu-screen" class="screen">
-      <h1 class="text--white text--glow text--center text-2xl">Choose a question</h1>
-      <div class="question-container">
-        <!--tạo động danh sách câu hỏi ở đây-->
-      </div>
-    </div>
-
-    <div id="question-screen" class="screen">
-      <!-- Top Banner -->
-      <div class="top-banner">
-        <div class="banner-container">
-          <img class="top-banner-background" src="./assets/question_background.png" alt="Top Banner Background" />
-          <p id="question-content" class="top-banner-text">Câu hỏi nằm ở đây</p>
+  <body>
+    <div id="game-canvas">
+      <button id="reset-btn">RESET STATE</button>
+      <!--MAIN MENU-->
+      <div id="start-menu-screen" class="screen">
+        <div class="menu-container">
+          <div class="menu-buttons">
+            <button class="menu-button" id="start-btn">Bắt đầu trò chơi</button>
+            <button class="menu-button" id="guide-btn">Hướng dẫn</button>
+          </div>
         </div>
       </div>
 
-      <!-- Main content -->
-      <div class="content-container">
-        <div class="content" id="list-answers">
-          <!--câu trả lời ở đây-->
+      <!--QUESTION MENU-->
+      <div id="question-menu-screen" class="screen">
+        <h1 class="text--white text--glow text--center text-2xl">
+          Choose a question
+        </h1>
+        <div class="question-container">
+          <!--tạo động danh sách câu hỏi ở đây-->
         </div>
       </div>
 
-      <!-- Bottom Banner -->
-      <div class="bottom-banner">
-        <div class="banner-container">
-          <img class="bottom-banner-background" src="./assets/answer_background.png" alt="Bottom Banner Background" />
-          <p id="correct-answer" class="text--gradient text--glow bottom-banner-text text--center"></p>
+      <div id="question-screen" class="screen">
+        <!-- Top Banner -->
+        <div class="top-banner">
+          <div class="banner-container">
+            <img
+              class="top-banner-background"
+              src="./assets/question_background.png"
+              alt="Top Banner Background"
+            />
+            <p id="question-content" class="top-banner-text">
+              Câu hỏi nằm ở đây
+            </p>
+          </div>
         </div>
+
+        <!-- Main content -->
+        <div class="content-container">
+          <div class="content" id="list-answers">
+            <!--câu trả lời ở đây-->
+          </div>
+        </div>
+
+        <!-- Bottom Banner -->
+        <div class="bottom-banner">
+          <div class="banner-container">
+            <img
+              class="bottom-banner-background"
+              src="./assets/answer_background.png"
+              alt="Bottom Banner Background"
+            />
+            <p
+              id="correct-answer"
+              class="text--gradient text--glow bottom-banner-text text--center"
+            ></p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <img
+          class="action-btn icon-left"
+          id="close-question-btn"
+          src="./assets/close_btn.png"
+          alt="X"
+        />
+        <img
+          class="action-btn icon-right"
+          id="next-question-btn"
+          src="./assets/next_btn.png"
+          alt="Next"
+        />
       </div>
 
-      <!-- Action Buttons -->
-      <img class="action-btn icon-left" id="close-question-btn" src="./assets/close_btn.png" alt="X">
-      <img class="action-btn icon-right" id="next-question-btn" src="./assets/next_btn.png" alt="Next">
-    </div>
+      <!--NEW QUESTION-->
+      <div id="new-question-screen" class="screen">
+        <div class="new-question">
+          <!-- Header -->
+          <div class="new-question__header">
+            <div class="turn-order">
+              <div id="turn-order-bar" class="turn-order__list">
+                <!-- JS will populate turn slots -->
+              </div>
+            </div>
 
-    <!--NEW QUESTION-->
-    <div id="new-question-screen" class="screen">
-      <div class="new-question">
-        <!-- Header -->
-        <div class="new-question__header">
-          <div class="turn-order">
-            <div id="turn-order-bar" class="turn-order__list">
-              <!-- JS will populate turn slots -->
+            <div class="current-turn">
+              <span class="current-turn__label">ACTIVE TURN</span>
+              <div id="current-turn" class="current-turn__team"></div>
             </div>
           </div>
 
-          <div class="current-turn">
-            <span class="current-turn__label">ACTIVE TURN</span>
-            <div id="current-turn" class="current-turn__team"></div>
-          </div>
-        </div>
+          <!-- Main Layout -->
+          <div class="new-question__layout">
+            <!-- Left Sidebar -->
+            <div
+              id="new-question-screen-left-sidebar"
+              class="new-question__sidebar new-question__sidebar--left"
+            ></div>
 
-        <!-- Main Layout -->
-        <div class="new-question__layout">
+            <!-- Center: Question -->
+            <div class="new-question__main">
+              <div class="question-card">
+                <div id="new-question-content" class="question-card__text">
+                  In what year did the Great Kingdom fall?
+                </div>
 
-          <!-- Left Sidebar -->
-          <div id="new-question-screen-left-sidebar" class="new-question__sidebar new-question__sidebar--left">
-          </div>
-
-          <!-- Center: Question -->
-          <div class="new-question__main">
-            <div class="question-card">
-              <div id="new-question-content" class="question-card__text">
-                In what year did the Great Kingdom fall?
+                <div
+                  id="new-question-list-answers"
+                  class="question-card__answers"
+                >
+                  <div class="answer-option">A<br />1066</div>
+                  <div class="answer-option">B<br />1215</div>
+                  <div class="answer-option">C<br />1453</div>
+                  <div class="answer-option">D<br />1492</div>
+                </div>
               </div>
 
-              <div id="new-question-list-answers" class="question-card__answers">
-                <div class="answer-option">A<br>1066</div>
-                <div class="answer-option">B<br>1215</div>
-                <div class="answer-option">C<br>1453</div>
-                <div class="answer-option">D<br>1492</div>
+              <div class="banner-container">
+                <img
+                  class="bottom-banner-background"
+                  src="./assets/answer_background.png"
+                  alt="Bottom Banner Background"
+                />
+                <p
+                  id="new-question-correct-answer"
+                  class="bottom-banner-text question-card__reveal text--gradient text--glow text--center"
+                ></p>
               </div>
 
+              <div id="new-question-action-bar" class="question-actions">
+                <img
+                  class="action-btn action-btn--close"
+                  src="./assets/close_btn.png"
+                  alt="Close question"
+                />
+                <img
+                  class="action-btn action-btn--next"
+                  src="./assets/next_btn.png"
+                  alt="Next question"
+                />
+              </div>
             </div>
 
-            <div class="banner-container">
-              <img class="bottom-banner-background" src="./assets/answer_background.png"
-                alt="Bottom Banner Background" />
-              <p id="new-question-correct-answer"
-                class="bottom-banner-text question-card__reveal text--gradient text--glow text--center">
-              </p>
-            </div>
-
-            <div id="new-question-action-bar" class="question-actions">
-              <img class="action-btn action-btn--close" src="./assets/close_btn.png" alt="Close question">
-              <img class="action-btn action-btn--next" src="./assets/next_btn.png" alt="Next question">
-            </div>
+            <!-- Right Sidebar -->
+            <div
+              id="new-question-screen-right-sidebar"
+              class="new-question__sidebar new-question__sidebar--right"
+            ></div>
           </div>
+        </div>
+      </div>
 
-          <!-- Right Sidebar -->
-          <div id="new-question-screen-right-sidebar" class="new-question__sidebar new-question__sidebar--right">
+      <!--RARE CARD-->
+      <div id="rare-card-screen" class="screen">
+        <div class="card-slide-container">
+          <div class="card-container card-container--rare">
+            <img
+              class="card__image card__image--back"
+              src="./assets/card_back.png"
+              alt="Card Back"
+            />
+            <!--CHƯA LÀM: tạo động bài hiếm tại đây-->
+            <img
+              class="card__image card__image--rare"
+              src="./assets/card_change.png"
+              alt="Card Change"
+            />
+          </div>
+          <div>
+            <p class="text--gradient text--glow text-2xl text--center">
+              YOU FOUND A RARE CARD!
+            </p>
+            <p class="text-xl text--white text--center">Reveal it or get 5?</p>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!--RARE CARD-->
-    <div id="rare-card-screen" class="screen">
-      <div class="card-slide-container">
-        <div class="card-container card-container--rare">
-          <img class="card__image card__image--back" src="./assets/card_back.png" alt="Card Back">
-          <!--CHƯA LÀM: tạo động bài hiếm tại đây-->
-          <img class="card__image card__image--rare" src="./assets/card_change.png" alt="Card Change">
+        <!-- Action Buttons -->
+        <img class="action-btn icon-right" src="./assets/menu.png" alt="Menu" />
+      </div>
+
+      <!--SLIDE CARD-->
+      <div id="common-card-drawing-screen" class="screen">
+        <div class="card-slide-container" id="list-slide-cards">
+          <!--thêm động bộ bài tại đây-->
         </div>
-        <div>
-          <p class="text--gradient text--glow text-2xl text--center">YOU FOUND A RARE CARD!</p>
-          <p class="text-xl text--white text--center">Reveal it or get 5?</p>
-        </div>
+
+        <!-- Action Buttons -->
+        <img
+          class="action-btn icon-right"
+          id="question-menu-btn"
+          src="./assets/menu.png"
+          alt="Menu"
+        />
       </div>
-
-      <!-- Action Buttons -->
-      <img class="action-btn icon-right" src="./assets/menu.png" alt="Menu">
     </div>
-
-    <!--SLIDE CARD-->
-    <div id="common-card-drawing-screen" class="screen">
-      <div class="card-slide-container" id="list-slide-cards">
-        <!--thêm động bộ bài tại đây-->
-      </div>
-
-      <!-- Action Buttons -->
-      <img class="action-btn icon-right" id="question-menu-btn" src="./assets/menu.png" alt="Menu">
-    </div>
-  </div>
-  <script type="module" src="./dist/app.js"></script>
-</body>
-
+    <script type="module" src="./dist/app.js"></script>
+  </body>
 </html>
