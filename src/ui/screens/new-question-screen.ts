@@ -114,10 +114,12 @@ class NewQuestionScreen {
     this.questionEl.textContent = question.content;
     this.answersEl.innerHTML = '';
 
+    const questionNos = ["A", "B", "C", "D"];
+
     question.answers.forEach((answer, i) => {
       const div = document.createElement('div');
       div.className = 'answer-item';
-      div.textContent = `${i + 1}. ${answer}`;
+      div.textContent = `${questionNos[i]}. ${answer}`;
       this.answersEl.appendChild(div);
     });
 
