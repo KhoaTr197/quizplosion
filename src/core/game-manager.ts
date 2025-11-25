@@ -7,13 +7,9 @@ import QuestionScreen from "../ui/screens/question-screen.js";
 import PersistentUI from "../ui/persistent-ui-manager.js";
 import CardDrawingScreen from "../ui/screens/card-drawing-screen.js";
 import AudioManager from "./audio-manager.js";
-<<<<<<< HEAD
 import NewQuestionScreen from "../ui/screens/new-question-screen.js";
 import DeckManager from "./deck-manager.js";
-=======
-import SetupScreen from "../ui/screens/setup-screen.js";
 import TeamManager from "./team-manager.js";
->>>>>>> 21b4f38 (feat: quản lý đội (chưa hoàn thành))
 
 
 /**
@@ -79,11 +75,6 @@ class GameManager {
 
         break;
       }
-      case GamePhase.TEAM_SETUP: {
-        UI.show(ScreenId.SETUP);
-        (new SetupScreen).render();
-        break;
-      }
       case GamePhase.QUESTION_MENU: {
         UI.show(ScreenId.QUESTION_MENU);
         (new QuestionMenuScreen).render();
@@ -124,7 +115,6 @@ class GameManager {
   private getCurrentScreenId(phase: GamePhase): ScreenId {
     const map: Partial<Record<GamePhase, ScreenId>> = {
       [GamePhase.START_MENU]: ScreenId.START_MENU,
-      [GamePhase.TEAM_SETUP]: ScreenId.SETUP,
       [GamePhase.QUESTION_MENU]: ScreenId.QUESTION_MENU,
       [GamePhase.SHOWING_QUESTION]: ScreenId.QUESTION,
       [GamePhase.STEAL_QUESTION]: ScreenId.QUESTION,
@@ -142,9 +132,8 @@ class GameManager {
     GameDispatcher.instance.subscribe((action: GameAction) => {
       switch (action.type) {
         case 'START_GAME':
-          GameStateManager.instance.setState({ phase: GamePhase.TEAM_SETUP });
+          GameStateManager.instance.setState({ phase: GamePhase.QUESTION_MENU });
           break;
-<<<<<<< HEAD
         case 'FINISH_TEAM_SETUP': {
           const teams = action.payload.teams;
           console.log('Teams setup complete:', teams);
@@ -157,26 +146,17 @@ class GameManager {
             phase: GamePhase.QUESTION_MENU,
             teams: teams,
             turnOrder: TeamManager.instance.getTurnOrders()
-=======
-        case 'FINISH_TEAM_SETUP':{
-          const teams = action.payload.teams;
-          console.log('Teams setup complete:', teams);
-          TeamManager.instance.setTeams(teams);
-          //xử lý Random thứ tự chơi
-          TeamManager.instance.randomTeamsOrder();
-          const order = TeamManager.instance.getTeamsOrder();
-          console.log('Team order:', order);
-
-          GameStateManager.instance.setState({
-              phase: GamePhase.QUESTION_MENU, 
-              teams: teams,
-              turnOrder: order
->>>>>>> 21b4f38 (feat: quản lý đội (chưa hoàn thành))
           });
           break;
         }
         case 'SELECT_QUESTION':
           TeamManager.instance.setup();
+          //debug
+          const order = TeamManager.instance.getTurnOrders();
+          console.log('Team order:', order);
+          const steals = TeamManager.instance.getStealOrders();
+          console.log('steal queue:', steals);
+          //
           GameStateManager.instance.setState({
             phase: GamePhase.SHOWING_QUESTION,
             currentQuestionId: action.payload.id,
@@ -186,16 +166,27 @@ class GameManager {
           break;
         case 'SKIP_TURN':
           const stealQueue = TeamManager.instance.getStealOrders();
-          if (stealQueue.length !== 0) {
-            if (TeamManager.instance.nextStealTurn()){
-              GameStateManager.instance.setState({
-                phase: GamePhase.STEAL_QUESTION,
-                currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
-                activeTeamId: TeamManager.instance.getActiveTeamId(),
-                stealQueue: stealQueue
-              });
-            }
+          // Nếu không còn đội nào để cướp nữa → chuyển sang đội tiếp theo và về menu câu hỏi
+          if (stealQueue.length === 0) {
+            console.warn('No team available to steal the question.');
+            TeamManager.instance.nextTurn();
+            const nextIndex = TeamManager.instance.getCurrentTurnIndex();
+            GameStateManager.instance.setState({
+              phase: GamePhase.QUESTION_MENU,
+              currentQuestionId: null,
+              stealQueue: [],
+              currentTurnIndex: nextIndex,
+              activeTeamId: TeamManager.instance.getActiveTeamId()
+            });
+            break;
           }
+          TeamManager.instance.nextStealTurn();
+          GameStateManager.instance.setState({
+            phase: GamePhase.STEAL_QUESTION,
+            currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
+            activeTeamId: TeamManager.instance.getActiveTeamId(),
+            stealQueue: stealQueue
+          });
           break;
         case 'REVEAL_CORRECT_ANSWER':
           GameStateManager.instance.setState({
@@ -208,7 +199,6 @@ class GameManager {
           })
           break;
         case 'SHOW_QUESTION_MENU':
-          TeamManager.instance.reset()
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
           })
