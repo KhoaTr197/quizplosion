@@ -7,7 +7,6 @@ class TeamManager {
   private turnOrders: number[] = []; //mảng chứa id đội chơi theo thứ tự được random
   private currentTurnIndex: number = 0; // chỉ số lượt hiện tại trong teamsOrder
   private stealOrders: number[] = []; //mảng chứa id đội chơi có thể cướp lượt
-  //private answeringIndex: number = 0; //index của đội đang trả lời
   private activeTeamId: number = 0; //index của đội đang trả lời
 
   /** Private constructor → không cho new trực tiếp */
@@ -28,12 +27,8 @@ class TeamManager {
     * Reset toàn bộ đội chơi – dùng khi bắt đầu game mới
   */
   public reset() {
-    this.teams = [];
-    this.turnOrders = [];
-    this.stealOrders = [];
-    this.currentTurnIndex = 0;
-    //this.answeringIndex = 0;
-    this.activeTeamId = 0;
+    this.setup();
+    this.activeTeamId = this.turnOrders[this.currentTurnIndex];
   }
   public randomTeamsOrder(): void {
     this.turnOrders = this.teams.map(team => team.id);
@@ -63,15 +58,9 @@ class TeamManager {
   public getTurnOrders(): number[] {
     return this.turnOrders;
   }
-  // public getAnsweringIndex(): number {
-  //   return this.answeringIndex;
-  // }
   public getActiveTeamId(): number {
     return this.activeTeamId;
   }
-  // public setAnsweringIndex(value: number ): void {
-  //   this.answeringIndex = value;
-  // }
   /** 
    * Cập nhật điểm số của đội chơi
    * @param teamId ID của đội
@@ -102,12 +91,6 @@ class TeamManager {
   /**
    * Lấy thông tin đội đang đến lượt
    */
-  // public getCurrentTeam(): Team | undefined {
-  //   if (this.turnOrders.length === 0) return undefined;
-    
-  //   const currentTeamId = this.turnOrders[this.currentTurnIndex];
-  //   return this.teams.find(t => t.id === currentTeamId);
-  // }
   public getCurrentTeam(): Team | undefined {
     if (this.activeTeamId === null) return undefined;
     return this.teams.find(t => t.id === this.activeTeamId);
@@ -116,14 +99,6 @@ class TeamManager {
    * Chuyển sang lượt chính thức tiếp theo
    * Dùng khi kết thúc hoàn toàn một câu hỏi (sau khi đã xử lý xong việc cướp lượt nếu có)
    */
-  // public nextTurn(): void {
-  //   if (this.turnOrders.length === 0) return undefined;
-  //   this.currentTurnIndex++;
-  //   if (this.currentTurnIndex >= this.turnOrders.length) {
-  //     this.currentTurnIndex = 0;
-  //   }
-  //   this.answeringIndex = this.currentTurnIndex;
-  // }
   public nextTurn(): void {
     if (this.turnOrders.length === 0) return;
 
@@ -136,7 +111,7 @@ class TeamManager {
     // Cập nhật người đang chơi là người giữ lượt chính
     this.activeTeamId = this.turnOrders[this.currentTurnIndex];
     
-    // Xóa hàng đợi cướp (để đảm bảo sạch sẽ)
+    // Xóa hàng đợi cướp 
     this.stealOrders = [];
   }
   /**
@@ -168,17 +143,9 @@ class TeamManager {
     const currentStealTeamId = this.stealOrders[0];
     return this.teams.find(t => t.id === currentStealTeamId);
   }
-  // public nextStealTurn(): void {
-  //   if(this.stealOrders.length === 0) return;
-  //   this.answeringIndex = this.stealOrders[0];
-  //   this.calcStealOrders();
-  //   console.log(`Hàng đợi cướp lượt`, this.stealOrders);
-  //   if(this.stealOrders.length === 0) {
-  //     this.currentTurnIndex = 0;
-  //     this.answeringIndex = 0;
-  //     return;
-  //   }
-  // }
+  /**
+   * chuyển lượt (dành cho lượt cướp)
+   */
   public nextStealTurn(): boolean {
     if (this.stealOrders.length === 0) {
       return false; // Hết người cướp
