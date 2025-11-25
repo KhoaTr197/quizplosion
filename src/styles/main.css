@@ -249,7 +249,8 @@ body {
 
 /* HUY 22/11/25 STYLES */
 .screen,
-#correct-answer {
+#correct-answer,
+#new-question-correct-answer {
   display: none;
   animation: fadeIn 0.3s ease;
 }
@@ -258,7 +259,8 @@ body {
 }
 
 .screen.active,
-#correct-answer.active {
+#correct-answer.active,
+#new-question-correct-answer.active {
   display: block;
 }
 
@@ -287,7 +289,7 @@ body {
 
 .new-question__header {
   color: #ffffff;
-  background: url("../../assets/answer_background.png") center/cover no-repeat;
+  background: #050d20;
   display: flex;
   align-items: center;
   padding: 0 5rem;
@@ -310,14 +312,16 @@ body {
   align-items: center;
   width: 4rem;
   height: 4rem;
-  background: #050d20;
-  border: 4px solid #0a0a0a;
+  background: #162133;
+  border: 2px solid #363e51;
   filter: brightness(0.5);
 }
 
 .turn-order__slot--active {
-  border-color: var(--primary-clr);
   filter: brightness(1);
+  background: #89110f;
+  border-color: var(--secondary-clr);
+  transform: scale(1.1);
 }
 
 .current-turn {
@@ -354,6 +358,7 @@ body {
   color: #ffffff;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 1rem;
   font-size: 2rem;
 }
@@ -374,8 +379,15 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url("../../assets/answer_background.png") center/cover no-repeat;
+  background: #162133;
+  border: 2px solid #363e51;
   z-index: -1;
+}
+
+.new-question__sidebar .team.team--active::before {
+  background: #89110f;
+  border-color: var(--secondary-clr);
+  transform: scale(1.1);
 }
 
 .new-question__sidebar--right .team::before {
@@ -392,6 +404,7 @@ body {
   flex: 1;
   background: white;
   border: #000 0.3rem solid;
+  margin-bottom: 1rem;
 }
 
 .question-actions .action-btn {
