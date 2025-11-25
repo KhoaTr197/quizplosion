@@ -11,6 +11,7 @@ import SetupScreen from "../ui/screens/setup-screen.js";
 import TeamManager from "./team-manager.js";
 import NewQuestionScreen from "../ui/screens/new-question-screen.js";
 import DeckManager from "./deck-manager.js";
+import RareCardScreen from "../ui/screens/rare-card-screen.js";
 
 
 /**
@@ -97,6 +98,8 @@ class GameManager {
       case GamePhase.REVEALING_ANSWER:
         break;
       case GamePhase.RARE_CARD_DECISION: {
+        UI.show(ScreenId.RARE_CARD);
+        (new RareCardScreen).render();
         break;
       }
       case GamePhase.COMMON_CARD_DRAWING: {
@@ -148,21 +151,24 @@ class GameManager {
           //setup
           TeamManager.instance.randomTeamsOrder();
           TeamManager.instance.setup();
-
+          TeamManager.instance.startNewQuestion();
+          TeamManager.instance.debug();
           GameStateManager.instance.setState({
-              phase: GamePhase.QUESTION_MENU, 
-              teams: teams,
-              turnOrder: TeamManager.instance.getTurnOrders()
+            phase: GamePhase.QUESTION_MENU, 
+            teams: teams,
+            turnOrder: TeamManager.instance.getTurnOrders(),
+            stealQueue: TeamManager.instance.getStealOrders(),
+            activeTeamId: TeamManager.instance.getActiveTeamId(),
+            currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
           });
           break;
         }
         case 'SELECT_QUESTION':
-          TeamManager.instance.setup();
+          // TeamManager.instance.setup();
+          // TeamManager.instance.startNewQuestion();
           GameStateManager.instance.setState({
             phase: GamePhase.SHOWING_QUESTION,
             currentQuestionId: action.payload.id,
-            stealQueue: TeamManager.instance.getStealOrders(),
-            activeTeamId: TeamManager.instance.getActiveTeamId(),
           });
           break;
         case 'SKIP_TURN':
@@ -189,15 +195,21 @@ class GameManager {
           })
           break;
         case 'SHOW_QUESTION_MENU':
-          TeamManager.instance.reset()
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
           })
           break;
         case 'RETURN_TO_QUESTION_MENU':
+          TeamManager.instance.setup();
+          TeamManager.instance.nextTurn();
+          TeamManager.instance.startNewQuestion();
+          TeamManager.instance.debug();
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
-            currentQuestionId: null
+            currentQuestionId: null,
+            stealQueue: TeamManager.instance.getStealOrders(),
+            activeTeamId: TeamManager.instance.getActiveTeamId(),
+            currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
 
           })
           DeckManager.instance.reset();
@@ -205,6 +217,11 @@ class GameManager {
         case 'BEGIN_COMMON_CARD_DRAWING':
           GameStateManager.instance.setState({
             phase: GamePhase.COMMON_CARD_DRAWING,
+          })
+          break;
+        case 'SHOW_RARE_CARD_SCREEN': 
+          GameStateManager.instance.setState({
+            phase: GamePhase.RARE_CARD_DECISION,
           })
           break;
         case 'RESET_GAME':

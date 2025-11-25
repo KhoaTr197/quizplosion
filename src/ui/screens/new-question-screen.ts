@@ -4,6 +4,7 @@ import QuizManager from "../../core/quiz-manager.js";
 import GameDispatcher from "../../game-dispatcher.js";
 import TeamManager from "../../core/team-manager.js";
 import Team from "../../core/team.js";
+import DeckManager from "../../core/deck-manager.js";
 
 /**
  * Màn hình câu hỏi
@@ -137,13 +138,26 @@ class NewQuestionScreen {
   private bindEvents(): void {
     // Nút Đóng
     this.closeQuestionBtn.onclick = () => {
-      GameDispatcher.instance.dispatch({
-        type: 'SHOW_QUESTION_MENU',
-      });
+      const phase = GameStateManager.instance.getState().phase;
+      // Hiện đáp án
+      if (phase === GamePhase.SHOWING_QUESTION || phase == GamePhase.STEAL_QUESTION) {
+        this.correctAnswerEl.classList.add('active');
 
-      QuizManager.instance.answerById(this.questionId);
-      //hiện lại nút bỏ lượt
-      this.skipTurnBtn.style.display = 'initial';
+        console.log(this.questionId);
+
+        GameDispatcher.instance.dispatch({
+          type: 'REVEAL_CORRECT_ANSWER',
+          payload: { id: this.questionId }
+        });
+      } //ngược lại, về menu câu hỏi 
+      else if (phase === GamePhase.REVEALING_ANSWER) {
+        GameDispatcher.instance.dispatch({
+          type: 'RETURN_TO_QUESTION_MENU',
+        });
+        QuizManager.instance.answerById(this.questionId);
+        //hiện lại nút bỏ lượt
+        this.skipTurnBtn.style.display = 'initial';
+      }
     }
 
     // Nút Hiện Câu Trả Lời, click thêm lần nữa sẽ chuyển trang rút bài
@@ -151,7 +165,7 @@ class NewQuestionScreen {
       const phase = GameStateManager.instance.getState().phase;
 
       // Hiện đáp án
-      if (phase === GamePhase.SHOWING_QUESTION) {
+      if (phase === GamePhase.SHOWING_QUESTION || phase == GamePhase.STEAL_QUESTION) {
         this.correctAnswerEl.classList.add('active');
 
         console.log(this.questionId);
@@ -162,9 +176,18 @@ class NewQuestionScreen {
         });
       }
       else if (phase === GamePhase.REVEALING_ANSWER) {
-        GameDispatcher.instance.dispatch({
-          type: 'BEGIN_COMMON_CARD_DRAWING',
-        })
+        if(DeckManager.instance.type == 'Rare'){
+            GameDispatcher.instance.dispatch({
+            type: 'SHOW_RARE_CARD_SCREEN',
+          })
+        } else {
+          GameDispatcher.instance.dispatch({
+            type: 'BEGIN_COMMON_CARD_DRAWING',
+          })
+        }
+        // GameDispatcher.instance.dispatch({
+        //   type: 'SHOW_RARE_CARD_SCREEN',
+        // })
       }
     };
     // Nút Bỏ Qua Lượt

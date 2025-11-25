@@ -4,7 +4,7 @@ class TeamManager {
   private static _instance: TeamManager;
 
   private teams: Team[] = []; //mảng danh sách đội chơi
-  private turnOrders: number[] = []; //mảng chứa id đội chơi theo thứ tự được random
+  private turnOrders: number[] = []; //mảng chứa id đội chơi theo thứ tự được random (main turn)
   private currentTurnIndex: number = 0; // chỉ số lượt hiện tại trong teamsOrder
   private stealOrders: number[] = []; //mảng chứa id đội chơi có thể cướp lượt
   private activeTeamId: number = 0; //index của đội đang trả lời
@@ -42,7 +42,6 @@ class TeamManager {
     this.activeTeamId = this.turnOrders[this.currentTurnIndex];
   }
   public setup(): void {
-    //this.answeringIndex = this.currentTurnIndex;
     this.stealOrders = this.turnOrders.filter((_, k)=> k !== this.currentTurnIndex);
   }
   public getTeams(): Team[] {
@@ -100,26 +99,20 @@ class TeamManager {
    * Dùng khi kết thúc hoàn toàn một câu hỏi (sau khi đã xử lý xong việc cướp lượt nếu có)
    */
   public nextTurn(): void {
-    if (this.turnOrders.length === 0) return;
+    //if (this.turnOrders.length === 0) return;
 
     // Tăng index lượt chính
-    this.currentTurnIndex++;
-    if (this.currentTurnIndex >= this.turnOrders.length) {
-      this.currentTurnIndex = 0;
-    }
+    // this.currentTurnIndex++;
+    // if (this.currentTurnIndex >= this.turnOrders.length) {
+    //   this.currentTurnIndex = 0;
+    // }
+    this.currentTurnIndex = (this.currentTurnIndex + 1) % this.turnOrders.length;
 
     // Cập nhật người đang chơi là người giữ lượt chính
     this.activeTeamId = this.turnOrders[this.currentTurnIndex];
     
     // Xóa hàng đợi cướp 
     this.stealOrders = [];
-  }
-  /**
-   * Tính toán danh sách chỉ số các đội có thể cướp lượt.
-   */
-  public calcStealOrders(): void {
-    if (this.turnOrders.length == 0) return;
-    this.stealOrders.shift();
   }
   public getStealOrders(): number[]{
     return this.stealOrders;
@@ -165,6 +158,19 @@ class TeamManager {
    */
   public getCurrentTurnIndex(): number {
     return this.currentTurnIndex;
+  }
+  public startNewQuestion(): void {
+    this.activeTeamId = this.turnOrders[this.currentTurnIndex];
+    this.prepareStealQueue();
+  }
+  // Debug
+  public debug(): void {
+    console.log('Main Order:', this.turnOrders.map(id => this.getTeamById(id)?.name).join(' → '));
+    console.log('Current Main Index:', this.currentTurnIndex);
+    console.log('Active Team:', this.getCurrentTeam()?.name);
+    console.log('Steal Queue:', this.stealOrders.map(id => this.getTeamById(id)?.name).join(' → '));
+    console.log('Scores:', this.teams.map(t => `${t.name}: ${t.score}`).join(' | '));
+    console.log('---');
   }
 }
 

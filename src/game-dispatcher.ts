@@ -27,7 +27,6 @@ export type GameAction =
   | { type: 'BEGIN_COMMON_CARD_DRAWING' }
   | { type: 'DRAW_NEXT_CARD'; payload: { card: Card } }
   | { type: 'STOP_DRAWING' }
-  /** Cướp câu hỏi từ nhóm không trả lời được (theo thứ tự top-down) */
   | { type: 'STEAL_QUESTION'; }
   /** Bomb */
   | { type: 'BOMB_EXPLODED'; payload: { isNuclear: boolean } }

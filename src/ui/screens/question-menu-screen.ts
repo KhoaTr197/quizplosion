@@ -1,6 +1,7 @@
 import QuizManager from "../../core/quiz-manager.js";
 import StateManager from "../../core/game-state-manager.js";
 import GameDispatcher from "../../game-dispatcher.js";
+import TeamManager from "../../core/team-manager.js";
 
 /**
  * Màn hình danh sách câu hỏi (grid Q1, Q2, Q3...)
@@ -8,12 +9,17 @@ import GameDispatcher from "../../game-dispatcher.js";
 class QuestionMenuScreen {
   // DOM Elements
   private container = document.querySelector('.question-container') as HTMLElement;
+  private currentTeamName = document.querySelector('#current-team-name') as HTMLElement;
 
   /**
    * Render toàn bộ grid câu hỏi
    */
   public render(): void {
     this.container.innerHTML = '';
+    this.currentTeamName.innerHTML = '';
+
+    const currentTeam = TeamManager.instance.getTeamById(TeamManager.instance.getActiveTeamId());
+    this.currentTeamName.innerHTML = currentTeam ? currentTeam.name : "Team name";
 
     QuizManager.instance.questions.forEach((q, idx) => {
       const btn = document.createElement('div');
