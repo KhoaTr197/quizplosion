@@ -39,7 +39,6 @@ class NewQuestionScreen {
     this.renderTurnBar();
     this.renderQuestion();
     this.renderTeamBars();
-    this.renderButtons();
   }
 
   /**
@@ -59,8 +58,11 @@ class NewQuestionScreen {
    * Render thanh theo dõi lượt
    */
   private renderTurnBar(): void {
+    console.log("render turn bar");
     const turnOrders = TeamManager.instance.getTurnOrders();
     const teams = TeamManager.instance.getTeams();
+    console.log("turn orders: ", turnOrders);
+    console.log("active team id: ", TeamManager.instance.getActiveTeamId());
     turnOrders.forEach((turnOrder, idx) => {
       const turnOrderSlot = document.createElement('div');
       turnOrderSlot.classList.add("turn-order__slot");
@@ -140,6 +142,8 @@ class NewQuestionScreen {
       });
 
       QuizManager.instance.answerById(this.questionId);
+      //hiện lại nút bỏ lượt
+      this.skipTurnBtn.style.display = 'initial';
     }
 
     // Nút Hiện Câu Trả Lời, click thêm lần nữa sẽ chuyển trang rút bài
@@ -165,14 +169,15 @@ class NewQuestionScreen {
     };
     // Nút Bỏ Qua Lượt
     this.skipTurnBtn.onclick = () => {
+      if(TeamManager.instance.getStealOrders().length == 1){
+        this.skipTurnBtn.style.display = 'none';
+      }
       GameDispatcher.instance.dispatch({
         type: 'SKIP_TURN',
       });
+      this.turnOrderBarEl.innerHTML = '';
+      this.renderTurnBar();
     };
-  }
-  private renderButtons(): void {
-    if(TeamManager.instance.getStealOrders().length == 0) 
-      this.skipTurnBtn.style.display = 'none';
   }
 }
 export default NewQuestionScreen;

@@ -159,12 +159,6 @@ class GameManager {
         }
         case 'SELECT_QUESTION':
           TeamManager.instance.setup();
-          //debug
-          const order = TeamManager.instance.getTurnOrders();
-          console.log('Team order:', order);
-          const steals = TeamManager.instance.getStealOrders();
-          console.log('steal queue:', steals);
-          //
           GameStateManager.instance.setState({
             phase: GamePhase.SHOWING_QUESTION,
             currentQuestionId: action.payload.id,
@@ -174,27 +168,16 @@ class GameManager {
           break;
         case 'SKIP_TURN':
           const stealQueue = TeamManager.instance.getStealOrders();
-          // Nếu không còn đội nào để cướp nữa → chuyển sang đội tiếp theo và về menu câu hỏi
-          if (stealQueue.length === 0) {
-            console.warn('No team available to steal the question.');
-            TeamManager.instance.nextTurn();
-            const nextIndex = TeamManager.instance.getCurrentTurnIndex();
-            GameStateManager.instance.setState({
-              phase: GamePhase.QUESTION_MENU,
-              currentQuestionId: null,
-              stealQueue: [],
-              currentTurnIndex: nextIndex,
-              activeTeamId: TeamManager.instance.getActiveTeamId()
-            });
-            break;
+          if (stealQueue.length !== 0) {
+            if (TeamManager.instance.nextStealTurn()){
+              GameStateManager.instance.setState({
+                phase: GamePhase.STEAL_QUESTION,
+                currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
+                activeTeamId: TeamManager.instance.getActiveTeamId(),
+                stealQueue: stealQueue
+              });
+            }
           }
-          TeamManager.instance.nextStealTurn();
-          GameStateManager.instance.setState({
-            phase: GamePhase.STEAL_QUESTION,
-            currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
-            activeTeamId: TeamManager.instance.getActiveTeamId(),
-            stealQueue: stealQueue
-          });
           break;
         case 'REVEAL_CORRECT_ANSWER':
           GameStateManager.instance.setState({
@@ -207,6 +190,7 @@ class GameManager {
           })
           break;
         case 'SHOW_QUESTION_MENU':
+          TeamManager.instance.reset()
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
           })
