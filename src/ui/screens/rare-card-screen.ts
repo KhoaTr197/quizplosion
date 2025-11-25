@@ -29,7 +29,8 @@ class RareCardScreen {
         img.classList.add('card__image--back');
         img.onclick = () => {
           img.classList.add('card__image--hide');
-          //deck.draw();
+          const card = deck.draw();
+          console.log(card);
         }
       }
       else {

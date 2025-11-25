@@ -159,7 +159,7 @@ body {
   content: "";
   position: absolute;
   inset: -10rem -14rem;
-  background: url("../assets/glow.png") center / 140% no-repeat;
+  background: url("../../assets/glow.png") center / 140% no-repeat;
   z-index: -100;
 
   animation: spin-glow 10s linear infinite;
@@ -321,6 +321,10 @@ body {
 .turn-order__slot--active {
   border-color: var(--primary-clr);
   filter: brightness(1);
+}
+.turn-order__slot--bombed,
+.team--bombed{
+  opacity: 0.4;
 }
 
 .current-turn {

@@ -3,7 +3,6 @@ import { QuizQuestion } from "../../core/questions.js";
 import QuizManager from "../../core/quiz-manager.js";
 import GameDispatcher from "../../game-dispatcher.js";
 import TeamManager from "../../core/team-manager.js";
-import Team from "../../core/team.js";
 import DeckManager from "../../core/deck-manager.js";
 
 /**
@@ -59,18 +58,19 @@ class NewQuestionScreen {
    * Render thanh theo dõi lượt
    */
   private renderTurnBar(): void {
-    console.log("render turn bar");
     const turnOrders = TeamManager.instance.getTurnOrders();
-    const teams = TeamManager.instance.getTeams();
-    console.log("turn orders: ", turnOrders);
-    console.log("active team id: ", TeamManager.instance.getActiveTeamId());
-    turnOrders.forEach((turnOrder, idx) => {
+    //const teams = TeamManager.instance.getTeams();
+    turnOrders.forEach((turnOrder) => {
       const turnOrderSlot = document.createElement('div');
       turnOrderSlot.classList.add("turn-order__slot");
+      const team = TeamManager.instance.getTeamById(turnOrder);
+      if(team && team.isBombed){
+        turnOrderSlot.classList.add("turn-order__slot--bombed");
+      }
 
       if (turnOrder == TeamManager.instance.getActiveTeamId()) {
         turnOrderSlot.classList.add("turn-order__slot--active");
-        this.currentTurnEl.textContent = teams[turnOrder].name;
+        this.currentTurnEl.textContent = team ? team.name : 'null';
       }
 
       turnOrderSlot.textContent = (turnOrder + 1).toString();
@@ -85,6 +85,7 @@ class NewQuestionScreen {
   private renderTeamBars(): void {
     const teams = TeamManager.instance.getTeams();
     const middleIdx = Math.ceil((teams.length / 2) - 1);
+    const activeTeamId = TeamManager.instance.getActiveTeamId();
 
     teams.forEach((team, idx) => {
       const teamStatus = document.createElement("div");
@@ -95,8 +96,12 @@ class NewQuestionScreen {
       teamNameEl.classList.add("team__name");
       teamScoreEl.classList.add("team__score");
 
-      if (idx == 0)
-        teamStatus.classList.add("team--active")
+      if (team.id === activeTeamId) {
+        teamStatus.classList.add("team--active");
+      }
+      if (team.isBombed) {
+        teamStatus.classList.add("team--bombed");
+      }
 
       teamNameEl.textContent = `${team.id + 1}. ${team.name}`;
       teamScoreEl.textContent = team.score.toString();

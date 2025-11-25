@@ -70,8 +70,12 @@ class DeckManager {
 
     this.deckType = randomRareCard_Percentage(state.answeredQuestionIds.length);
 
-    // Generate bộ bài theo loại
+    //Generate bộ bài theo loại
     this.generateDeckByType(this.deckType);
+
+    // //test rare
+    // this.deckType = 'Rare';
+    // this.generateDeckByType(this.deckType);
   }
   /**
    * Chọn ngẫu nhiên một lá điểm theo tỷ lệ trọng số

@@ -37,7 +37,9 @@ class CardDrawingScreen {
           console.log('[CardDrawingScreen]: ', img);
           img.classList.add('card__image--slided');
 
-          deck.draw();
+          //debug
+          const card = deck.draw();
+          console.log(card);
 
           GameDispatcher.instance.dispatch({
             type: "DRAW_NEXT_CARD",

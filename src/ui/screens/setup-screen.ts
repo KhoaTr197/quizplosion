@@ -1,6 +1,7 @@
 import GameStateManager, { GamePhase } from "../../core/game-state-manager.js";
 import { QuizQuestion } from "../../core/questions.js";
 import QuizManager from "../../core/quiz-manager.js";
+import Team from "../../core/team.js";
 import GameDispatcher from "../../game-dispatcher.js";
 
 /**
@@ -57,14 +58,15 @@ class SetupScreen {
     // Nút Chơi
     this.playBtn.addEventListener('click', () => {
       const inputs = document.querySelectorAll('.team-name-input');
-      const teams: { id: number; name: string; score: number }[] = [];
+      const teams: Team[] = [];
       
       inputs.forEach((el, idx) => {
         const input = el as HTMLInputElement;
         teams.push({
           id: idx, 
           name: input.value || `Đội ${idx + 1}`,
-          score: 0
+          score: 0,
+          isBombed: false
         });
       });
       GameDispatcher.instance.dispatch({
