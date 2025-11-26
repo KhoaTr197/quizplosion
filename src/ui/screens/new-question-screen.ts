@@ -205,6 +205,9 @@ class NewQuestionScreen {
       });
       this.turnOrderBarEl.innerHTML = '';
       this.renderTurnBar();
+      this.teamBarLeftEl.innerHTML = '';
+      this.teamBarRightEl.innerHTML = '';
+      this.renderTeamBars();
     };
   }
 }

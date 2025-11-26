@@ -5,12 +5,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quizplosion - Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./src/styles/main.css">
 </head>
 
 <body>
   <div id="game-canvas">
     <button id="reset-btn">RESET STATE</button>
+    <div id="scoreboard-container">
+      <h3>Score Board</h3>
+      <div id="score-list"></div>
+    </div>
+    <button id="scoreboard-btn">Show Score Board</button>
     <!--MAIN MENU-->
     <div id="start-menu-screen" class="screen">
       <div class="menu-container">
@@ -99,17 +108,16 @@
           <div class="new-question__main">
             <div class="question-card">
               <div id="new-question-content" class="question-card__text">
-                In what year did the Great Kingdom fall?
               </div>
 
               <div id="new-question-list-answers" class="question-card__answers">
-                <div class="answer-option">A<br>1066</div>
-                <div class="answer-option">B<br>1215</div>
-                <div class="answer-option">C<br>1453</div>
-                <div class="answer-option">D<br>1492</div>
               </div>
 
-              <p id="new-question-correct-answer" class="question-card__reveal text--gradient text--glow text--center">
+            </div>
+
+            <div class="new-question-correct-answer-container">
+              <p id="new-question-correct-answer"
+                class="bottom-banner-text question-card__reveal text--gradient text--glow text--center">
               </p>
             </div>
 
@@ -131,13 +139,11 @@
     <div id="rare-card-screen" class="screen">
       <div class="card-slide-container">
         <div class="card-container card-container--rare">
-          <img class="card__image card__image--back" src="./assets/card_back.png" alt="Card Back">
-          <!--CHƯA LÀM: tạo động bài hiếm tại đây-->
-          <img class="card__image card__image--rare" src="./assets/card_change.png" alt="Card Change">
+          
         </div>
-        <div>
+        <div class="team-info-container">
           <p class="text--gradient text--glow text-2xl text--center">YOU FOUND A RARE CARD!</p>
-          <p class="text-xl text--white text--center">Reveal it or get 5?</p>
+          <p class="text-xl text--white text--center">Reveal it or get 5 points?</p>
         </div>
       </div>
 
@@ -150,7 +156,10 @@
       <div class="card-slide-container" id="list-slide-cards">
         <!--thêm động bộ bài tại đây-->
       </div>
+      
+      <div class="team-info-container">
 
+      </div>
       <!-- Action Buttons -->
       <img class="action-btn icon-right" id="question-menu-btn" src="./assets/menu.png" alt="Menu">
     </div>
