@@ -5,9 +5,9 @@ import GameDispatcher from "../../game-dispatcher.js";
  */
 class SetupScreen {
   // DOM Elements
-  private numTeamsInput = document.getElementById('num-teams') as HTMLInputElement;
-  private teamNamesArea = document.getElementById('team-names-area') as HTMLElement;
-  private playBtn = document.getElementById('play-btn') as HTMLButtonElement;
+  private numTeamsInput = document.getElementById('input-team-count') as HTMLInputElement;
+  private teamNamesArea = document.getElementById('team-name-inputs') as HTMLElement;
+  private playBtn = document.getElementById('btn-play') as HTMLButtonElement;
 
   constructor() {
     this.bindEvents();

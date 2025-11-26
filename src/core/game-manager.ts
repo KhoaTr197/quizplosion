@@ -9,7 +9,6 @@ import CardDrawingScreen from "../ui/screens/card-drawing-screen.js";
 import AudioManager from "./audio-manager.js";
 import SetupScreen from "../ui/screens/setup-screen.js";
 import TeamManager from "./team-manager.js";
-import NewQuestionScreen from "../ui/screens/new-question-screen.js";
 import DeckManager from "./deck-manager.js";
 import RareCardScreen from "../ui/screens/rare-card-screen.js";
 
@@ -60,7 +59,7 @@ class GameManager {
     const targetScreenId = this.getCurrentScreenId(phase);
 
     // Nếu vẫn đang ở cùng một màn hình → KHÔNG render lại!
-    if (this.lastGameScreen === targetScreenId && targetScreenId != 'question-screen') {
+    if (this.lastGameScreen === targetScreenId) {
       console.log("[GameManager]: Screen không đổi → bỏ qua render");
       return;
     }
@@ -98,8 +97,8 @@ class GameManager {
         console.log('[Game Manager] Turn Order:', TeamManager.instance.getTurnOrder());
         console.log('[Game Manager] Current Idx:', TeamManager.instance.getCurrentTurnIndex());
 
-        UI.show(ScreenId.NEW_QUESTION);
-        (new NewQuestionScreen(state.currentQuestionId!)).render();
+        UI.show(ScreenId.QUESTION);
+        (new QuestionScreen(state.currentQuestionId!)).render();
 
         break;
       }

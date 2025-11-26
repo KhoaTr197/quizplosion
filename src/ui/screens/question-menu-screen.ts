@@ -8,7 +8,7 @@ import TeamManager from "../../core/team-manager.js";
  */
 class QuestionMenuScreen {
   // DOM Elements
-  private container = document.querySelector('.question-container') as HTMLElement;
+  private container = document.querySelector('.question-grid') as HTMLElement;
   private currentTeamName = document.querySelector('#current-team-name') as HTMLElement;
 
   /**
@@ -23,7 +23,7 @@ class QuestionMenuScreen {
 
     QuizManager.instance.questions.forEach((q, idx) => {
       const btn = document.createElement('div');
-      btn.className = 'question-item';
+      btn.className = 'question-grid__item';
       btn.textContent = `Q ${idx + 1}`;
 
       const state = StateManager.instance.getState();
@@ -31,8 +31,8 @@ class QuestionMenuScreen {
       if (state.answeredQuestionIds.includes(q.id)) {
         btn.classList.add(
           state.lastAnsweredQuestionId === q.id
-            ? 'question-item--last-completed'
-            : 'question-item--completed'
+            ? 'question-grid__item--last-completed'
+            : 'question-grid__item--completed'
         );
       } else {
         btn.onclick = () => {

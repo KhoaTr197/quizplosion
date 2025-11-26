@@ -14,166 +14,128 @@
 </head>
 
 <body>
-  <div id="game-canvas">
-    <button id="reset-btn">RESET STATE</button>
-    <div id="scoreboard-container">
-      <h3>Score Board</h3>
-      <div id="score-list"></div>
-    </div>
-    <button id="scoreboard-btn">Show Score Board</button>
-    <!--MAIN MENU-->
-    <div id="start-menu-screen" class="screen">
-      <div class="menu-container">
-        <div class="menu-buttons">
-          <button class="menu-button" id="start-btn">Start</button>
-          <button class="menu-button" id="guide-btn">Guide</button>
-        </div>
-      </div>
+  <div id="app">
+    <div id="dev-bar">
+      <button id="reset-btn" class="dev-btn">Reset State</button>
+      <button id="scoreboard-btn" class="dev-btn">Show Score Board</button>
     </div>
 
-    <!--SETUP-->
-    <div id="setup-screen" class="screen">
-      <h2 class="text--white text--glow text--center text-2xl">Game Setup</h2>
-      <div class="input-group">
-        <label>Number of teams:</label>
-        <input type="number" id="num-teams" min="2" max="10" value="3">
-      </div>
-      <div id="team-names-area"></div>
-      <button id="play-btn">Play</button>
-      <button>Return</button>
-    </div>
-
-    <!--SETUP-->
-    <div id="setup-screen" class="screen">
-      <h2 class="text--white text--glow text--center text-2xl">Game Setup</h2>
-      <div class="input-group">
-        <label>Number of teams:</label>
-        <input type="number" id="num-teams" min="2" max="10" value="3">
-      </div>
-      <div id="team-names-area"></div>
-      <button id="play-btn">Play</button>
-      <button>Return</button>
-    </div>
-
-    <!--QUESTION MENU-->
-    <div id="question-menu-screen" class="screen">
-      <p class="text-lg text--gradient text--glow text--center" id="current-team-name">Turn of: Team A</p>
-      <h2 class="text--white text--glow text--center text-2xl">Choose a question</h2>
-      <div class="question-container">
-        <!--tạo động danh sách câu hỏi ở đây-->
-      </div>
-    </div>
-
-    <div id="question-screen" class="screen">
-      <!-- Top Banner -->
-      <div class="top-banner">
-        <div class="banner-container">
-          <img class="top-banner-background" src="./assets/question_background.png" alt="Top Banner Background" />
-          <p id="question-content" class="top-banner-text">Câu hỏi nằm ở đây</p>
+    <div class="screens">
+      <!--MAIN MENU-->
+      <div id="start-menu-screen" class="screen">
+        <div class="start-menu">
+          <h1 class="start-menu__title text--gradient">Quizplosion</h1>
+          <div class="start-menu__actions">
+            <button id="start-btn" class="btn btn--primary btn--large">Start</button>
+            <button id="guide-btn" class="btn btn--secondary">Guide</button>
+          </div>
         </div>
       </div>
 
-      <!-- Main content -->
-      <div class="content-container">
-        <div class="content" id="list-answers">
-          <!--câu trả lời ở đây-->
+
+      <!--SETUP-->
+      <div id="setup-screen" class="screen">
+        <div class="setup">
+          <h2 class="setup__title text--white text--glow text--center text-2xl">Setup Teams</h2>
+
+          <div class="setup__form input-group">
+            <label class="setup__label" for="input-team-count">Number of teams:</label>
+            <input type="number" id="input-team-count" min="2" max="10" value="3" class="input input--number">
+          </div>
+
+          <div id="team-name-inputs" class="team-inputs"></div>
+
+          <div class="setup__actions">
+            <button id="btn-play" class="btn btn--primary">Start Now</button>
+            <button id="btn-back-to-menu" class="btn btn--secondary">Back</button>
+          </div>
         </div>
       </div>
 
-      <!-- Bottom Banner -->
-      <div class="bottom-banner">
-        <div class="banner-container">
-          <img class="bottom-banner-background" src="./assets/answer_background.png" alt="Bottom Banner Background" />
-          <p id="correct-answer" class="text--gradient text--glow bottom-banner-text text--center"></p>
+      <!--QUESTION MENU-->
+      <div id="question-menu-screen" class="screen">
+        <p class="text-lg text--gradient text--glow text--center" id="current-team-name">Turn of: Team A</p>
+        <h2 class="text--white text--glow text--center text-2xl">Choose a question</h2>
+        <div class="question-grid">
+          <!--tạo động danh sách câu hỏi ở đây-->
         </div>
       </div>
 
-      <!-- Action Buttons -->
-      <img class="action-btn icon-left" id="close-question-btn" src="./assets/close_btn.png" alt="X">
-      <img class="action-btn icon-right" id="next-question-btn" src="./assets/next_btn.png" alt="Next">
-    </div>
+      <!--NEW QUESTION-->
+      <div id="question-screen" class="screen">
+        <div class="question">
+          <!-- Header -->
+          <div class="question__header">
+            <div class="turn-order">
+              <div id="turn-order-bar" class="turn-order__list">
+                <!-- JS will populate turn slots -->
+              </div>
+            </div>
 
-    <!--NEW QUESTION-->
-    <div id="new-question-screen" class="screen">
-      <div class="new-question">
-        <!-- Header -->
-        <div class="new-question__header">
-          <div class="turn-order">
-            <div id="turn-order-bar" class="turn-order__list">
-              <!-- JS will populate turn slots -->
+            <div class="current-turn">
+              <span class="current-turn__label">ACTIVE TURN</span>
+              <div id="current-turn" class="current-turn__team"></div>
             </div>
           </div>
 
-          <div class="current-turn">
-            <span class="current-turn__label">ACTIVE TURN</span>
-            <div id="current-turn" class="current-turn__team"></div>
-          </div>
-        </div>
+          <!-- Main Layout -->
+          <div class="question__layout">
 
-        <!-- Main Layout -->
-        <div class="new-question__layout">
+            <!-- Left Sidebar -->
+            <div id="question-screen-left-sidebar" class="question__sidebar question__sidebar--left">
+            </div>
 
-          <!-- Left Sidebar -->
-          <div id="new-question-screen-left-sidebar" class="new-question__sidebar new-question__sidebar--left">
-          </div>
+            <!-- Center: Question -->
+            <div class="question__main">
+              <div class="question-card">
+                <div id="question-content" class="question-card__text">
+                </div>
 
-          <!-- Center: Question -->
-          <div class="new-question__main">
-            <div class="question-card">
-              <div id="new-question-content" class="question-card__text">
+                <div id="question-list-answers" class="question-card__answers">
+                </div>
+
               </div>
 
-              <div id="new-question-list-answers" class="question-card__answers">
+              <div id="question-action-bar" class="question-actions">
+                <img class="action-btn action-btn--close" src="./assets/close_btn.png" alt="Close question">
+                <img class="action-btn action-btn--next" src="./assets/next_btn.png" alt="Next question">
+                <img class="action-btn action-btn--skip-turn" src="./assets/skip_turn_btn.png" alt="Skip Turn">
               </div>
-
             </div>
 
-            <div class="new-question-correct-answer-container">
-              <p id="new-question-correct-answer"
-                class="bottom-banner-text question-card__reveal text--gradient text--glow text--center">
-              </p>
-            </div>
-
-            <div id="new-question-action-bar" class="question-actions">
-              <img class="action-btn action-btn--close" src="./assets/close_btn.png" alt="Close question">
-              <img class="action-btn action-btn--next" src="./assets/next_btn.png" alt="Next question">
-              <img class="action-btn action-btn--skip-turn" src="./assets/skip_turn_btn.png" alt="Skip Turn">
+            <!-- Right Sidebar -->
+            <div id="question-screen-right-sidebar" class="question__sidebar question__sidebar--right">
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- Right Sidebar -->
-          <div id="new-question-screen-right-sidebar" class="new-question__sidebar new-question__sidebar--right">
+      <!--COMMON CARD-->
+      <div id="common-card-drawing-screen" class="screen">
+        <div class="card-slide-container" id="list-slide-cards">
+        </div>
+
+        <!-- Action Buttons -->
+        <img class="action-btn icon-right" id="question-menu-btn" src="./assets/menu.png" alt="Menu">
+      </div>
+
+      <!--RARE CARD-->
+      <div id="rare-card-screen" class="screen">
+        <div class="card-slide-container">
+          <div class="card-container card-container--rare">
+            <img class="card__image card__image--back" src="./assets/card_back.png" alt="Card Back">
+            <img class="card__image card__image--rare" src="./assets/card_change.png" alt="Card Change">
+          </div>
+          <div>
+            <p class="text--gradient text--glow text-2xl text--center">YOU FOUND A RARE CARD!</p>
+            <p class="text-xl text--white text--center">Reveal it or get 5?</p>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!--RARE CARD-->
-    <div id="rare-card-screen" class="screen">
-      <div class="card-slide-container">
-        <div class="card-container card-container--rare">
-          <img class="card__image card__image--back" src="./assets/card_back.png" alt="Card Back">
-          <!--CHƯA LÀM: tạo động bài hiếm tại đây-->
-          <img class="card__image card__image--rare" src="./assets/card_change.png" alt="Card Change">
-        </div>
-        <div>
-          <p class="text--gradient text--glow text-2xl text--center">YOU FOUND A RARE CARD!</p>
-          <p class="text-xl text--white text--center">Reveal it or get 5?</p>
-        </div>
+        <!-- Action Buttons -->
+        <img class="action-btn icon-right" id="questionmenu-btn" src="./assets/menu.png" alt="Menu">
       </div>
 
-      <!-- Action Buttons -->
-      <img class="action-btn icon-right" id="questionmenu-btn" src="./assets/menu.png" alt="Menu">
-    </div>
-
-    <!--SLIDE CARD-->
-    <div id="common-card-drawing-screen" class="screen">
-      <div class="card-slide-container" id="list-slide-cards">
-        <!--thêm động bộ bài tại đây-->
-      </div>
-
-      <!-- Action Buttons -->
-      <img class="action-btn icon-right" id="question-menu-btn" src="./assets/menu.png" alt="Menu">
     </div>
   </div>
   <script type="module" src="./dist/app.js"></script>
