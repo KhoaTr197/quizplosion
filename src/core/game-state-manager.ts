@@ -126,7 +126,9 @@ class GameStateManager {
   public getState(): Readonly<GameState> {
     return structuredClone(this.state);
   }
-
+  public numberAnswered():number | null {
+    return this.state.answeredQuestionIds.length;
+  }
   /**
    * Cập nhật một phần trạng thái
    * @param partial Các thuộc tính cần thay đổi

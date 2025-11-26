@@ -8,6 +8,7 @@ export enum ScreenId {
   QUESTION = 'question-screen',
   RARE_CARD = 'rare-card-screen',
   COMMON_CARD_DRAWING = 'common-card-drawing-screen',
+  RANKING="ranking-screen",
 }
 
 /**
@@ -38,6 +39,7 @@ class UIManager {
       [ScreenId.QUESTION]: getEl(ScreenId.QUESTION),
       [ScreenId.RARE_CARD]: getEl(ScreenId.RARE_CARD),
       [ScreenId.COMMON_CARD_DRAWING]: getEl(ScreenId.COMMON_CARD_DRAWING),
+      [ScreenId.RANKING]:getEl(ScreenId.RANKING),
     };
   }
 

@@ -5,7 +5,6 @@ class PersistentUIManager {
   private static _instance: PersistentUIManager;
 
   private resetBtn = document.getElementById("reset-btn") as HTMLElement;
-
   constructor() {
     this.bindEvents();
   }

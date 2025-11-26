@@ -21,9 +21,9 @@ class QuestionScreen {
   private questionEl = document.getElementById('question-content') as HTMLElement;
   private answersEl = document.getElementById('question-list-answers') as HTMLElement;
 
-  private closeQuestionBtn = document.querySelector('#question-action-bar .action-btn--close') as HTMLElement;
-  private nextQuestionBtn = document.querySelector('#question-action-bar .action-btn--next') as HTMLElement;
-  private skipTurnBtn = document.querySelector('#question-action-bar .action-btn--skip-turn') as HTMLElement;
+  private closeQuestionBtn = document.querySelector('#question-action-bar .action-btn--close') as HTMLButtonElement;
+  private nextQuestionBtn = document.querySelector('#question-action-bar .action-btn--next') as HTMLButtonElement;
+  private skipTurnBtn = document.querySelector('#question-action-bar .action-btn--skip-turn') as HTMLButtonElement;
 
   constructor(questionId: QuizQuestion["id"]) {
     console.log('[QuestionScreen] Question ID - ', questionId);
@@ -173,13 +173,18 @@ class QuestionScreen {
           type: 'REVEAL_CORRECT_ANSWER',
           payload: { id: this.questionId }
         });
+        this.nextQuestionBtn.disabled=true
+        this.skipTurnBtn.disabled=true
       } //ngược lại, về menu câu hỏi 
       else if (phase === GamePhase.REVEALING_ANSWER) {
         GameDispatcher.instance.dispatch({
           type: 'RETURN_TO_QUESTION_MENU',
         });
         QuizManager.instance.answerById(this.questionId);
+        this.nextQuestionBtn.disabled=false;
+        this.skipTurnBtn.disabled=false;
       }
+      
     }
 
     // Nút Hiện Câu Trả Lời, click thêm lần nữa sẽ chuyển trang rút bài
@@ -188,6 +193,8 @@ class QuestionScreen {
 
       // Hiện đáp án
       if (phase === GamePhase.SHOWING_QUESTION || phase == GamePhase.STEAL_QUESTION) {
+this.closeQuestionBtn.disabled=true
+        this.skipTurnBtn.disabled=true
         this.revealCorrectAnswers();
 
         GameDispatcher.instance.dispatch({
@@ -195,12 +202,16 @@ class QuestionScreen {
           payload: { id: this.questionId }
         });
       }
+      
       else if (phase === GamePhase.REVEALING_ANSWER) {
+         this.closeQuestionBtn.disabled=false;
+        this.skipTurnBtn.disabled=false;
         if (DeckManager.instance.type == 'Rare') {
           GameDispatcher.instance.dispatch({
             type: 'SHOW_RARE_CARD_SCREEN',
           })
-        } else {
+        } else { this.closeQuestionBtn.disabled=false;
+        this.skipTurnBtn.disabled=false;
           GameDispatcher.instance.dispatch({
             type: 'BEGIN_COMMON_CARD_DRAWING',
           })
