@@ -251,29 +251,37 @@ class GameManager {
           DeckManager.instance.reset();
           break;
         case 'BEGIN_COMMON_CARD_DRAWING':
-          GameStateManager.instance.setState({
-            phase: GamePhase.COMMON_CARD_DRAWING,
-          })
-          break;
-        case 'DRAW_NEXT_CARD':
-          const currentTeam = TeamManager.instance.getCurrentTeam()!;
+          {
+            const activeTeam = TeamManager.instance.getActiveTeam()!;
+            console.log("active id", activeTeam.id);
+            console.log("active name", activeTeam.name);
+            GameStateManager.instance.setState({
+              phase: GamePhase.COMMON_CARD_DRAWING,
+            })
+            break;
+          }
+        case 'DRAW_NEXT_CARD':{
+          const activeTeam = TeamManager.instance.getActiveTeam()!;
+          console.log("active id", activeTeam.id);
+          console.log("active name", activeTeam.name);
           const card = action.payload.card;
           if (card.type == 'bomb') {
             console.log("bomb");
-            TeamManager.instance.triggerBomb(currentTeam.id);
+            TeamManager.instance.triggerBomb(activeTeam.id);
           }
           else if (card.type == 'nuclear') {
             console.log("nuclear");
             TeamManager.instance.triggerNuclear();
           }
           else {
-            TeamManager.instance.updateScore(currentTeam.id, card.type, this.extractNumber(card.type));
+            TeamManager.instance.updateScore(activeTeam.id, card.type, this.extractNumber(card.type));
           }
 
           GameStateManager.instance.setState({
             phase: GamePhase.CARD_REVEALED,
           })
           break;
+        }
         case 'SHOW_RARE_CARD_SCREEN':
           GameStateManager.instance.setState({
             phase: GamePhase.RARE_CARD_DECISION,

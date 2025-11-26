@@ -67,7 +67,7 @@ class CardDrawingScreen {
       }
     }
     const infoContainer = document.createElement('div');
-    const activeTeam = TeamManager.instance.getCurrentTeam();
+    const activeTeam = TeamManager.instance.getActiveTeam();
     const teamNameEl = document.createElement('div');
     teamNameEl.className = 'text--white text--glow text-xl text--center team__name';
 
