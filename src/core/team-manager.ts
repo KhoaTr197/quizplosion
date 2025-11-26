@@ -217,6 +217,11 @@ class TeamManager {
   public getTeams(): Team[] {
     return structuredClone(this.teams);
   }
+public checkTeamLeft():number{
+  return this.teams.filter((t)=>t.isBombed===false).length;
+}
+
+
 
   /**
    * Lấy đội đang giữ lượt chính (đội được chọn câu hỏi)

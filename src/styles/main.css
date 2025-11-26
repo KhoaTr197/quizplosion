@@ -159,6 +159,30 @@ body {
   z-index: 99;
   transition: all ease 300ms;
 }
+.action-btn--close{
+  color: red;
+}
+.action-btn--close:disabled{
+ opacity: 0.5;           /* mờ đi */
+  cursor: not-allowed;     /* thay đổi con trỏ chuột */
+  background-color: #ccc;  /* đổi màu nền */
+  color: #666;             /* đổi màu chữ */}
+.action-btn--next{
+  color: green;
+}
+.action-btn--next:disabled{
+ opacity: 0.5;           /* mờ đi */
+  cursor: not-allowed;     /* thay đổi con trỏ chuột */
+  background-color: #ccc;  /* đổi màu nền */
+  color: #666;             /* đổi màu chữ */}
+.action-btn--skip-turn{
+color: rgb(255, 163, 4);
+}
+.action-btn--skip-turn:disabled{
+ opacity: 0.5;           /* mờ đi */
+  cursor: not-allowed;     /* thay đổi con trỏ chuột */
+  background-color: #ccc;  /* đổi màu nền */
+  color: #666;             /* đổi màu chữ */}
 
 .action-btn:hover {
   transform: scale(1.05);

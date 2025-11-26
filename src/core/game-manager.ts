@@ -11,6 +11,8 @@ import SetupScreen from "../ui/screens/setup-screen.js";
 import TeamManager from "./team-manager.js";
 import DeckManager from "./deck-manager.js";
 import RareCardScreen from "../ui/screens/rare-card-screen.js";
+import RankingScreen from "../ui/screens/ranking-screen.js";
+import { QUESTIONS } from "./questions.js";
 
 
 /**
@@ -116,6 +118,11 @@ class GameManager {
 
         break;
       }
+      case GamePhase.GAME_OVER:{
+        UI.show(ScreenId.RANKING);
+        (new RankingScreen).render();
+      }break;
+     
       default:
         console.warn(`Phase chưa được xử lý: ${phase}`);
         break;
@@ -140,6 +147,7 @@ class GameManager {
       [GamePhase.COMMON_CARD_DRAWING]: ScreenId.COMMON_CARD_DRAWING,
       [GamePhase.CARD_REVEALED]: ScreenId.COMMON_CARD_DRAWING,
       [GamePhase.RARE_CARD_DECISION]: ScreenId.RARE_CARD,
+      [GamePhase.GAME_OVER]:ScreenId.RANKING,
     };
     return map[phase] || ScreenId.START_MENU;
   }
@@ -174,6 +182,7 @@ class GameManager {
           break;
         }
         case 'SELECT_QUESTION':
+          
           GameStateManager.instance.setState({
             phase: GamePhase.SHOWING_QUESTION,
             currentQuestionId: action.payload.id,
@@ -182,6 +191,8 @@ class GameManager {
             stealQueue: TeamManager.instance.getStealQueue(),
             activeTeamId: TeamManager.instance.getActiveTeamId(),
           });
+              const state = GameStateManager.instance.getState();
+
           break;
         case 'SKIP_TURN':
          //const stealQueue = TeamManager.instance.getStealQueue();
@@ -212,11 +223,21 @@ class GameManager {
           })
           break;
         case 'SHOW_QUESTION_MENU':
+          
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
           })
           break;
         case 'RETURN_TO_QUESTION_MENU':
+            
+          if(TeamManager.instance.checkTeamLeft()===1||GameStateManager.instance.numberAnswered()===QUESTIONS.length){
+              GameStateManager.instance.setState({
+                phase:GamePhase.GAME_OVER,
+                
+              })
+            // console.clear();
+            // console.log("type of ",typeof TeamManager.instance.getTeams);
+        break;  }
           TeamManager.instance.nextTurn();
           TeamManager.instance.logCurrentTeamSession();
 
@@ -276,6 +297,11 @@ class GameManager {
             
           })
           break;
+        break;
+          case 'BOMB_EXPLODED':{
+            console.log("bomb no ");
+          
+          }
         case 'RESET_GAME':
           GameStateManager.clearSave();
           break;

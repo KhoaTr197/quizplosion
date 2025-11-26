@@ -17,7 +17,7 @@
   <div id="app">
     <div id="dev-bar">
       <button id="reset-btn" class="dev-btn">Reset State</button>
-      <button id="scoreboard-btn" class="dev-btn">Show Score Board</button>
+      <!-- <button id="scoreboard-btn" class="dev-btn">Show Score Board</button> -->
     </div>
 
     <div class="screens">
@@ -97,9 +97,12 @@
               </div>
 
               <div id="question-action-bar" class="question-actions">
-                <img class="action-btn action-btn--close" src="./assets/close_btn.png" alt="Close question">
+                <button class="action-btn action-btn--close">Return Menu</button>
+                <button class="action-btn action-btn--next">Show Question</button>
+                <button class="action-btn action-btn--skip-turn">Skip Turn</button>
+                <!-- <img class="action-btn action-btn--close" src="./assets/close_btn.png" alt="Close question">
                 <img class="action-btn action-btn--next" src="./assets/next_btn.png" alt="Next question">
-                <img class="action-btn action-btn--skip-turn" src="./assets/skip_turn_btn.png" alt="Skip Turn">
+                <img class="action-btn action-btn--skip-turn" src="./assets/skip_turn_btn.png" alt="Skip Turn"> -->
               </div>
             </div>
 
@@ -136,9 +139,25 @@
         <img class="action-btn icon-right" id="questionmenu-btn" src="./assets/menu.png" alt="Menu">
       </div>
 
+      <!-- Ranking Screen -->
+      <div id="ranking-screen"   class="screen team-container">
+          <table id="team-table">
+              <thead>
+                  <tr>
+                      <th>Name Team</th>
+                      <th>Score</th>
+                  </tr>
+              </thead>
+              <tbody id="team-table-body">
+                  
+              </tbody>
+          </table>
+      </div>
     </div>
   </div>
+
   <script type="module" src="./dist/app.js"></script>
+  <script></script>
 </body>
 
 </html>
