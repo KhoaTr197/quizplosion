@@ -66,7 +66,10 @@ class QuestionScreen {
       turnOrderSlot.classList.add("turn-order__slot");
       const teamInfo = TeamManager.instance.getTeamById(turnId);
 
-      if (idx === currentTurnIndex) {
+      if (teamInfo!.isBombed) {
+        turnOrderSlot.classList.add("turn-order__slot--bombed");
+      }
+      else if (idx === currentTurnIndex) {
         turnOrderSlot.classList.add("turn-order__slot--active");
         this.currentTurnEl.textContent = teamInfo!.name;
       }
@@ -102,9 +105,10 @@ class QuestionScreen {
       teamNameEl.classList.add("team__name");
       teamScoreEl.classList.add("team__score");
 
-      //console.log("[NewQuestionScreen]", team.id, TeamManager.instance.getCurrentTeam()!.id, team.id === TeamManager.instance.getCurrentTeam()?.id)
-
-      if (team.id === TeamManager.instance.getCurrentTeam()?.id)
+      if (team!.isBombed) {
+        teamStatus.classList.add("team--bombed");
+      }
+      else if (team.id === TeamManager.instance.getCurrentTeam()?.id)
         teamStatus.classList.add("team--active")
 
       teamNameEl.textContent = team.name;

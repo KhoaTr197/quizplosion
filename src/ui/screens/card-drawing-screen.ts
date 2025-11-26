@@ -1,5 +1,6 @@
 import { PlaceholderCardType } from "../../core/cards.js";
 import DeckManager from "../../core/deck-manager.js";
+import TeamManager from "../../core/team-manager.js";
 import GameDispatcher from "../../game-dispatcher.js";
 
 /**
@@ -45,6 +46,8 @@ class CardDrawingScreen {
               card: deck.peek()!
             }
           })
+
+          this.renderTeamInfo();
         };
 
       cardContainer.appendChild(img);
@@ -52,6 +55,34 @@ class CardDrawingScreen {
 
     this.listSlideCards.innerHTML = '';
     this.listSlideCards.appendChild(cardContainer);
+
+    this.renderTeamInfo();
+  }
+
+  public renderTeamInfo(): void {
+    const cardContainer = document.querySelector('#list-slide-cards .card-container');
+    if (cardContainer) {
+      while (cardContainer.nextSibling) {
+        cardContainer.parentNode?.removeChild(cardContainer.nextSibling);
+      }
+    }
+    const infoContainer = document.createElement('div');
+    const activeTeam = TeamManager.instance.getCurrentTeam();
+    const teamNameEl = document.createElement('div');
+    teamNameEl.className = 'text--white text--glow text-xl text--center team__name';
+
+    const teamScoreEl = document.createElement('div');
+    teamScoreEl.className = 'text--white text--glow text-xl text--center team__score';
+
+    if (activeTeam) {
+      teamNameEl.innerHTML = `${activeTeam.name}`;
+      teamScoreEl.innerHTML = `Your Points: ${activeTeam.score}`;
+    }
+
+    infoContainer.appendChild(teamNameEl);
+    infoContainer.appendChild(teamScoreEl);
+
+    this.listSlideCards.appendChild(infoContainer);
   }
 
   public bindEvents(): void {

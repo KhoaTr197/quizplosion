@@ -115,10 +115,7 @@ body {
     transform: rotate(360deg);
   }
 }
-.turn-order__slot--bombed,
-.team--bombed {
-  opacity: 0.4;
-}
+
 .card__image {
   position: absolute;
   width: 100%;
@@ -407,4 +404,23 @@ body {
 .question-actions .action-btn {
   position: relative;
   bottom: 0;
+}
+
+.turn-order__slot--bombed,
+.team.team--bombed {
+  opacity: 0.4;
+  background-image: linear-gradient(
+      to bottom right,
+      transparent calc(50% - 1px),
+      var(--secondary-clr) calc(50% - 1px),
+      var(--secondary-clr) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ),
+    linear-gradient(
+      to top right,
+      transparent calc(50% - 1px),
+      var(--secondary-clr) calc(50% - 1px),
+      var(--secondary-clr) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    );
 }
