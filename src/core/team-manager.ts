@@ -28,14 +28,17 @@ class TeamManager {
   /** Danh sách tất cả các đội tham gia (Map) */
   private teamMap = new Map<Team["id"], Team>();
 
+  /** chỉ số lượt hiện tại trong teamsOrder */ 
+  private currentTurnIndex: number = 0; 
+
   /** Thứ tự lượt chơi chính (được random lúc bắt đầu) – chứa các team ID */
-  private turnOrder: Team["id"][] = [];
+  private turnOrders: Team["id"][] = [];
 
-  /** Chỉ số hiện tại trong mảng turnOrder (đội đang hoặc sắp đến lượt) */
-  private currentTurnIndex: number = 0;
+  /** mảng chứa id đội chơi có thể cướp lượt */
+  private stealQueue: Team["id"][] = []; 
 
-  /** Hàng đợi các đội có thể cướp lượt (FIFO), theo thứ tự top-down, bỏ qua đội chính */
-  private stealQueue: number[] = [];
+  /** id của đội đang trả lời */
+  private activeTeamId: Team["id"] = 0;
 
   constructor() {
     this.reset();
@@ -53,16 +56,38 @@ class TeamManager {
   }
 
   /**
-   * Reset toàn bộ đội chơi – dùng khi bắt đầu game mới
-   */
+    * Reset toàn bộ đội chơi – dùng khi bắt đầu game mới
+  */
   public reset() {
-    this.teams = [];
-    this.turnOrder = [];
-    this.teamMap.clear();
     this.currentTurnIndex = 0;
-    this.stealQueue = [];
+    this.activeTeamId = this.turnOrders[0];
+    this.teams.forEach(t=>t.isBombed = false);
+    this.setup();
+    
+    if (this.turnOrders.length > 0) {
+       this.ensureValidActiveTeam();
+    }
   }
-
+  public setup(): void {
+    this.stealQueue = [];
+    this.activeTeamId = this.turnOrders[this.currentTurnIndex];
+  }
+  /**
+   * Tìm đội hợp lệ đầu tiên bắt đầu từ currentTurnIndex
+   * Dùng sau khi random hoặc reset để tránh trúng ngay đội bị bomb
+   */
+  private ensureValidActiveTeam(): void {
+    let checked = 0;
+    // Lặp để tìm đội chưa bị bomb
+    while (this.isTeamBombed(this.turnOrders[this.currentTurnIndex]) && checked < this.turnOrders.length) {
+       this.currentTurnIndex = (this.currentTurnIndex + 1) % this.turnOrders.length;
+       checked++;
+    }
+    this.activeTeamId = this.turnOrders[this.currentTurnIndex];
+  }
+  public getTurnOrders(): Team["id"][] {
+    return structuredClone(this.turnOrders);
+  }
   /**
    * Thiết lập danh sách đội chơi và khởi tạo thứ tự lượt
    * 
@@ -71,11 +96,12 @@ class TeamManager {
    * setupTeams([{ name: "T1" }, { name: "GENG" }])
    */
   public setUpTeams(teams: Omit<Team, "id" | "score">[]): void {
-    this.reset()
+    this.reset();
+    console.log("active id sau khi gọi reset trong setupteams: ", this.activeTeamId);
 
     this.teams = teams.map((t, i) => {
       const team: Team = {
-        id: i + 1,
+        id: i,
         name: t.name.trim() || `Team ${i + 1}`,
         score: 0,
         isBombed: false
@@ -86,18 +112,22 @@ class TeamManager {
       return team;
     });
 
-    this.turnOrder = this.teams.map(team => team.id);
+    this.turnOrders = this.teams.map(team => team.id);
     this.currentTurnIndex = 0;
+    //
+    this.shuffleOrders();
     this.prepareStealQueue();
+    this.activeTeamId = this.turnOrders[0];
+
   }
 
   /**
    *  Random thứ tự team bằng thuật toán Fisher-Yates
    */
   public shuffleOrders(): void {
-    for (let i = this.turnOrder.length - 1; i > 0; i--) {
+    for (let i = this.turnOrders.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [this.turnOrder[i], this.turnOrder[j]] = [this.turnOrder[j], this.turnOrder[i]];
+      [this.turnOrders[i], this.turnOrders[j]] = [this.turnOrders[j], this.turnOrders[i]];
     }
     this.prepareStealQueue();
   }
@@ -108,13 +138,13 @@ class TeamManager {
    */
   private prepareStealQueue(): void {
     this.stealQueue = [];
-    const len = this.turnOrder.length;
+    const len = this.turnOrders.length;
     if (len <= 1) return;
 
     for (let i = 1; i < len; i++) {
       const idx = (this.currentTurnIndex + i) % len;
 
-      const teamId = this.turnOrder[idx];
+      const teamId = this.turnOrders[idx];
 
       // CHỈ THÊM VÀO HÀNG ĐỢI NẾU KHÔNG BỊ BOMB
       if (!this.isTeamBombed(teamId)) {
@@ -204,16 +234,16 @@ class TeamManager {
    * @returns Mảng lượt (readonly)
    */
   public getTurnOrder(): Team["id"][] {
-    return structuredClone(this.turnOrder);
+    return structuredClone(this.turnOrders);
   }
 
   /**
    * Lấy thông tin đội đang đến lượt
    */
   public getCurrentTeam(): Team | undefined {
-    console.log("[TeamManager]", this.turnOrder, this.currentTurnIndex)
+    console.log("[TeamManager]", this.turnOrders, this.currentTurnIndex)
 
-    return this.getTeamById(this.turnOrder[this.currentTurnIndex]);
+    return this.getTeamById(this.turnOrders[this.currentTurnIndex]);
   }
 
   /**
@@ -243,6 +273,18 @@ class TeamManager {
   public getCurrentTurnIndex(): number {
     return structuredClone(this.currentTurnIndex);
   }
+  /**
+   * Id team đang trả lời hiện tại.
+   * Trả về bản sao readonly để đảm bảo không ai sửa trực tiếp.
+   * 
+   * @returns Index lượt hiện tại (readonly)
+   */
+  public getActiveTeamId(): Team["id"] {
+    return structuredClone(this.activeTeamId);
+  }
+  public getActiveTeam(): Team | undefined {
+    return this.teams.find(t => t.id == this.activeTeamId);
+  }
 
   /**
    * Chuyển sang lượt chính thức tiếp theo
@@ -253,14 +295,15 @@ class TeamManager {
   }
 
   private advanceToNextValidTurn(): void {
-    if (this.turnOrder.length === 0) return;
+    if (this.turnOrders.length === 0) return;
 
     let attempts = 0;
     do {
-      this.currentTurnIndex = (this.currentTurnIndex + 1) % this.turnOrder.length;
+      this.currentTurnIndex = (this.currentTurnIndex + 1) % this.turnOrders.length;
       attempts++;
-    } while (this.isTeamBombed(this.turnOrder[this.currentTurnIndex]) && attempts < this.turnOrder.length);
-
+    } while (this.isTeamBombed(this.turnOrders[this.currentTurnIndex]) && attempts < this.turnOrders.length);
+    
+    this.setup();
     this.prepareStealQueue();
   }
 
@@ -268,16 +311,17 @@ class TeamManager {
    * Chuyển lượt (dành cho lượt cướp)
    */
   public nextStealTurn(): boolean {
-    if (this.stealQueue.length === 0) return false; // Hết team cướp
+    if (this.stealQueue.length === 0) {
+      return false; // Hết người cướp
+    }
 
-    const nextTeamId = this.stealQueue.shift()!;
-    // Tìm index của team vừa cướp để set currentTurnIndex
-    const idx = this.turnOrder.indexOf(nextTeamId);
-
-    if (idx !== -1) this.currentTurnIndex = idx;
-
-    this.prepareStealQueue();
-    return true;
+    const nextStealTeamId = this.stealQueue.shift(); 
+    
+    if (nextStealTeamId !== undefined) {
+      this.activeTeamId = nextStealTeamId;
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -293,14 +337,16 @@ class TeamManager {
    */
   public restore(data: {
     teams: Team[],
-    turnOrder: number[],
+    turnOrders: Team["id"][],
     currentTurnIndex: number,
-    stealQueue: number[]
+    stealQueue: Team["id"][],
+    activeTeamId: Team["id"]
   }): void {
     this.teams = data.teams;
-    this.turnOrder = data.turnOrder;
+    this.turnOrders = data.turnOrders;
     this.currentTurnIndex = data.currentTurnIndex;
     this.stealQueue = data.stealQueue;
+    this.activeTeamId = data.activeTeamId;
     this.teamMap = new Map(this.teams.map(t => [t.id, t]));
   }
 
@@ -308,12 +354,13 @@ class TeamManager {
    * Debug: In ra bộ bài vừa tạo
    */
   public logCurrentTeamSession(): void {
-    console.log('Main Order:', this.turnOrder.map(id => {
+    console.log('Main Order:', this.turnOrders.map(id => {
       const t = this.getTeamById(id);
       return t?.isBombed ? `[${t.name} - BOMB]` : t?.name;
     }).join(' -> '));
     console.log('Current Main Index:', this.currentTurnIndex);
-    console.log('Active Team:', this.getCurrentTeam()?.name);
+    console.log('active team id:', this.getActiveTeamId());
+    console.log('Active Team name:', this.getActiveTeam()?.name);
     console.log('Steal Queue:', this.stealQueue.map(id => this.getTeamById(id)?.name).join(' → '));
     console.log('Scores:', this.teams.map(t => `${t.name}: ${t.score} ${t.isBombed ? '(BOMB)' : ''}`).join(' | '));
   }

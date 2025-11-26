@@ -158,13 +158,18 @@ class GameManager {
 
           TeamManager.instance.setUpTeams(teams);
           console.log('[GameManager] Phase - FINISH_TEAM_SETUP:');
+          
+          //TeamManager.instance.shuffleOrders();
           TeamManager.instance.logCurrentTeamSession();
-
-          TeamManager.instance.shuffleOrders();
 
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,
             teams: TeamManager.instance.getTeams(),
+            currentQuestionId: null,
+            turnOrders: TeamManager.instance.getTurnOrder(),
+            currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
+            stealQueue: TeamManager.instance.getStealQueue(),
+            activeTeamId: TeamManager.instance.getActiveTeamId(),
           });
           break;
         }
@@ -172,22 +177,26 @@ class GameManager {
           GameStateManager.instance.setState({
             phase: GamePhase.SHOWING_QUESTION,
             currentQuestionId: action.payload.id,
-            turnOrder: TeamManager.instance.getTurnOrder(),
+            turnOrders: TeamManager.instance.getTurnOrder(),
             currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
             stealQueue: TeamManager.instance.getStealQueue(),
+            activeTeamId: TeamManager.instance.getActiveTeamId(),
           });
           break;
         case 'SKIP_TURN':
-          const stealQueue = TeamManager.instance.getStealQueue();
+         //const stealQueue = TeamManager.instance.getStealQueue();
 
           console.log("[GameManager] Phase - SKIP_TURN: ");
 
-          if (stealQueue.length !== 0) {
+          if (TeamManager.instance.getStealQueue().length !== 0) {
             if (TeamManager.instance.nextStealTurn()) {
+                  console.log("[GameManager]: activeTeamId - ", TeamManager.instance.getCurrentTurnIndex(), TeamManager.instance.getActiveTeamId());
+
               GameStateManager.instance.setState({
                 phase: GamePhase.STEAL_QUESTION,
                 currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
-                stealQueue: stealQueue
+                stealQueue: TeamManager.instance.getStealQueue(),
+                activeTeamId: TeamManager.instance.getActiveTeamId(),
               });
             }
           }
@@ -216,6 +225,7 @@ class GameManager {
             currentQuestionId: null,
             stealQueue: TeamManager.instance.getStealQueue(),
             currentTurnIndex: TeamManager.instance.getCurrentTurnIndex(),
+            activeTeamId: TeamManager.instance.getActiveTeamId(),
           })
           DeckManager.instance.reset();
           break;
@@ -246,6 +256,24 @@ class GameManager {
         case 'SHOW_RARE_CARD_SCREEN':
           GameStateManager.instance.setState({
             phase: GamePhase.RARE_CARD_DECISION,
+          })
+          break;
+         case 'REVEAL_RARE_CARD':
+          const activeTeam = TeamManager.instance.getActiveTeam();
+          if(activeTeam){
+            const activeTeamId = activeTeam.id;
+            if(action.payload.card.type == 'lose_all'){
+              console.log('lose all');
+              
+            } else {
+              console.log('change');
+
+            }
+          }
+          
+          GameStateManager.instance.setState({
+            phase: GamePhase.RARE_CARD_DECISION,
+            
           })
           break;
         case 'RESET_GAME':

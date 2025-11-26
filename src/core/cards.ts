@@ -63,7 +63,7 @@ export const COMMON_POINT_CARD_INFO: Record<CommonPointCardType, Omit<Card, "id"
     isBomb: false,
     metadata: {
       img: {
-        src: "../../assets/card_plus_1.png",
+        src: "./assets/card_plus_1.png",
         alt: "+1 Point Card"
       },
       sfx: ""
@@ -74,7 +74,7 @@ export const COMMON_POINT_CARD_INFO: Record<CommonPointCardType, Omit<Card, "id"
     isBomb: false,
     metadata: {
       img: {
-        src: "../../assets/card_plus_2.png",
+        src: "./assets/card_plus_2.png",
         alt: "+2 Points Card"
       },
       sfx: ""
@@ -85,7 +85,7 @@ export const COMMON_POINT_CARD_INFO: Record<CommonPointCardType, Omit<Card, "id"
     isBomb: false,
     metadata: {
       img: {
-        src: "../../assets/card_plus_3.png",
+        src: "./assets/card_plus_3.png",
         alt: "+3 Points Card"
       },
       sfx: ""
@@ -96,7 +96,7 @@ export const COMMON_POINT_CARD_INFO: Record<CommonPointCardType, Omit<Card, "id"
     isBomb: false,
     metadata: {
       img: {
-        src: "../../assets/card_plus_4.png",
+        src: "./assets/card_plus_4.png",
         alt: "+4 Points Card"
       },
       sfx: ""
@@ -107,7 +107,7 @@ export const COMMON_POINT_CARD_INFO: Record<CommonPointCardType, Omit<Card, "id"
     isBomb: false,
     metadata: {
       img: {
-        src: "../../assets/card_plus_5.png",
+        src: "./assets/card_plus_5.png",
         alt: "+5 Points Card"
       },
       sfx: ""
@@ -121,7 +121,7 @@ export const COMMON_SPECIAL_CARD_INFO: Record<CommonSpecialCardType, Omit<Card, 
     isBomb: false,
     metadata: {
       img: {
-        src: "../../assets/card_multiple_2.png",
+        src: "./assets/card_multiple_2.png",
         alt: "Multiply by 2 Card"
       },
       sfx: ""
@@ -132,7 +132,7 @@ export const COMMON_SPECIAL_CARD_INFO: Record<CommonSpecialCardType, Omit<Card, 
     isBomb: false,
     metadata: {
       img: {
-        src: "../../assets/card_divide_2.png",
+        src: "./assets/card_divide_2.png",
         alt: "Divide by 2 Card"
       },
       sfx: ""
@@ -143,7 +143,7 @@ export const COMMON_SPECIAL_CARD_INFO: Record<CommonSpecialCardType, Omit<Card, 
     isBomb: true,
     metadata: {
       img: {
-        src: "../../assets/card_bomb.png",
+        src: "./assets/card_bomb.png",
         alt: "Bomb Card"
       },
       sfx: ""
@@ -154,7 +154,7 @@ export const COMMON_SPECIAL_CARD_INFO: Record<CommonSpecialCardType, Omit<Card, 
     isBomb: true,
     metadata: {
       img: {
-        src: "../../assets/card_nuclear.png",
+        src: "./assets/card_nuclear.png",
         alt: "Nuclear Explosion Card"
       },
       sfx: ""
@@ -167,7 +167,7 @@ export const RARE_CARD_INFO: Record<RareCardType, Pick<Card, "name" | "metadata"
     name: "Change",
     metadata: {
       img: {
-        src: "../../assets/card_change.png",
+        src: "./assets/card_change.png",
         alt: "Change Card"
       },
       sfx: ""
@@ -177,7 +177,7 @@ export const RARE_CARD_INFO: Record<RareCardType, Pick<Card, "name" | "metadata"
     name: "Lose All",
     metadata: {
       img: {
-        src: "../../assets/card_lose_all.png",
+        src: "./assets/card_lose_all.png",
         alt: "Lose All Points Card"
       },
       sfx: ""
@@ -189,7 +189,7 @@ export const BACK_CARD_INFO: Pick<Card, "name" | "metadata"> = {
   name: "Back Card",
   metadata: {
     img: {
-      src: "../../assets/card_back.png",
+      src: "./assets/card_back.png",
       alt: "Back Of The Card",
     },
     sfx: ""

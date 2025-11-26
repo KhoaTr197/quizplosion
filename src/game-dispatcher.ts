@@ -32,7 +32,7 @@ export type GameAction =
   | { type: 'BOMB_EXPLODED'; payload: { isNuclear: boolean } }
   /** Bài Rare */
   | { type: 'SHOW_RARE_CARD_SCREEN' }
-  | { type: 'REVEAL_RARE_CARD' }
+  | { type: 'REVEAL_RARE_CARD'; payload: { card: Card } }
   | { type: 'DECLINE_RARE_CARD' }
   /** Bật/tắt âm lượng */
   | { type: 'TOGGLE_AUDIO' }

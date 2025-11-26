@@ -51,17 +51,15 @@ class QuestionScreen {
     this.turnOrderBarEl.innerHTML = '';
     this.currentTurnEl.textContent = '';
 
-    const state = GameStateManager.instance.getState();
-    const { turnOrder, currentTurnIndex } = state;
+    
+    const turnOrders = TeamManager.instance.getTurnOrders();
 
-    if (!turnOrder) {
+    if (!turnOrders) {
       console.warn("[NewQuestionScreen] Không thể render turn bar vì dữ liệu cần dùng không tồn tại");
       return;
     }
 
-    console.log("[NewQuestionScreen] State: ", state);
-
-    turnOrder.forEach((turnId, idx) => {
+    turnOrders.forEach((turnId) => {
       const turnOrderSlot = document.createElement('div');
       turnOrderSlot.classList.add("turn-order__slot");
       const teamInfo = TeamManager.instance.getTeamById(turnId);
@@ -69,7 +67,7 @@ class QuestionScreen {
       if (teamInfo!.isBombed) {
         turnOrderSlot.classList.add("turn-order__slot--bombed");
       }
-      else if (idx === currentTurnIndex) {
+      else if (turnId === TeamManager.instance.getActiveTeamId()) {
         turnOrderSlot.classList.add("turn-order__slot--active");
         this.currentTurnEl.textContent = teamInfo!.name;
       }
@@ -87,7 +85,7 @@ class QuestionScreen {
     this.teamBarLeftEl.innerHTML = '';
     this.teamBarRightEl.innerHTML = '';
 
-    const { teams } = GameStateManager.instance.getState();
+    const teams = TeamManager.instance.getTeams();    
 
     if (!teams) {
       console.warn("[NewQuestionScreen] Không thể render team bars vì dữ liệu cần dùng không tồn tại");
@@ -104,11 +102,12 @@ class QuestionScreen {
       teamStatus.classList.add("team");
       teamNameEl.classList.add("team__name");
       teamScoreEl.classList.add("team__score");
-
+      console.log("TEAM MANAGER: active id:", TeamManager.instance.getActiveTeamId());
+      console.log("team id:", team.id);
       if (team!.isBombed) {
         teamStatus.classList.add("team--bombed");
       }
-      else if (team.id === TeamManager.instance.getCurrentTeam()?.id)
+      else if (team.id === TeamManager.instance.getActiveTeamId())
         teamStatus.classList.add("team--active")
 
       teamNameEl.textContent = team.name;
@@ -179,6 +178,8 @@ class QuestionScreen {
           type: 'RETURN_TO_QUESTION_MENU',
         });
         QuizManager.instance.answerById(this.questionId);
+        //hiện lại nút bỏ lượt
+        this.skipTurnBtn.style.display = 'initial';
       }
     }
 

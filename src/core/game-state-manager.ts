@@ -30,9 +30,10 @@ export interface GameState {
   drawnCardsThisTurn: Card[];       // lá bài đã bốc trong lượt này (hiển thị animation)
   lastDrawnCard?: Card;             // lá vừa bốc (cho hiệu ứng)
   teams: Team[] | null; // danh sách đội chơi
-  turnOrder: number[] | null; // thứ tự lượt chơi (mảng chỉ số đội)
+  turnOrders: Team["id"][] | null; // thứ tự lượt chơi (mảng chỉ số đội)
   currentTurnIndex: number | null, // chỉ số lượt hiện tại trong turnOrder
-  stealQueue: number[] | null; // mảng chỉ số đội chơi trong hàng đợi cướp câu hỏi
+  stealQueue: Team["id"][] | null; // mảng chỉ số đội chơi trong hàng đợi cướp câu hỏi
+  activeTeamId: Team["id"] | null; //id của đội đang trả lời câu hỏi
   createdAt: number;
   updatedAt: number;
 }
@@ -75,9 +76,10 @@ class GameStateManager {
       lastAnsweredQuestionId: null,
       drawnCardsThisTurn: [],
       teams: null,
-      turnOrder: null,
+      turnOrders: null,
       currentTurnIndex: null,
       stealQueue: null,
+      activeTeamId: null,
       createdAt: Date.now(),
       updatedAt: Date.now(),
 
@@ -101,9 +103,10 @@ class GameStateManager {
       // Load data lên các manager
       TeamManager.instance.restore({
         teams: saved.teams!,
-        turnOrder: saved.turnOrder!,
+        turnOrders: saved.turnOrders!,
         currentTurnIndex: saved.currentTurnIndex!,
-        stealQueue: saved.stealQueue!
+        stealQueue: saved.stealQueue!,
+        activeTeamId: saved.activeTeamId!
       })
 
       return saved;
