@@ -9,6 +9,7 @@ class SetupScreen {
   private numTeamsInput = document.getElementById('input-team-count') as HTMLInputElement;
   private teamNamesArea = document.getElementById('team-name-inputs') as HTMLElement;
   private playBtn = document.getElementById('btn-play') as HTMLButtonElement;
+  private backBtn = document.getElementById('btn-back-to-menu') as HTMLButtonElement;
 
   constructor() {
     this.bindEvents();
@@ -52,8 +53,15 @@ class SetupScreen {
     const newBtn = this.playBtn.cloneNode(true) as HTMLButtonElement;
     parent.replaceChild(newBtn, this.playBtn);
     this.playBtn = newBtn as HTMLButtonElement;
+
+    this.backBtn.onclick = () => {
+      GameDispatcher.instance.dispatch({
+        type: 'RETURN_TO_START_MENU',
+      });
+    }
+
     // Nút Chơi
-    this.playBtn.addEventListener('click', () => {
+    this.playBtn.onclick = () => {
       const inputs = document.querySelectorAll('.team-name-input');
       const teams: Team[] = [];
 
@@ -70,7 +78,7 @@ class SetupScreen {
         type: 'FINISH_TEAM_SETUP',
         payload: { teams }
       });
-    })
+    }
   }
   /**
    * Hiển thị input tên đội chơi dựa trên số lượng đội

@@ -33,29 +33,29 @@
       </div>
 
 
-      <!--SETUP-->
-      <div id="setup-screen" class="screen">
-        <div class="setup">
-          <h2 class="setup__title text--white text--glow text--center text-2xl">Setup Teams</h2>
+        <!--SETUP-->
+        <div id="setup-screen" class="screen">
+          <div class="setup">
+            <h2 class="setup__title text--white text--glow text-center text-2xl">Setup Teams</h2>
 
-          <div class="setup__form input-group">
-            <label class="setup__label" for="input-team-count">Number of teams:</label>
-            <input type="number" id="input-team-count" min="2" max="10" value="3" class="input input--number">
-          </div>
+            <div class="setup__form input-group">
+              <label class="setup__label" for="input-team-count">Number of teams:</label>
+              <input type="number" id="input-team-count" min="2" max="10" value="3" class="input input--number">
+            </div>
 
-          <div id="team-name-inputs" class="team-inputs"></div>
+            <div id="team-name-inputs" class="team-inputs"></div>
 
-          <div class="setup__actions">
-            <button id="btn-play" class="btn btn--primary">Start Now</button>
-            <button id="btn-back-to-menu" class="btn btn--secondary">Back</button>
+            <div class="setup__actions">
+              <button id="btn-play" class="btn btn--primary">Start Now</button>
+              <button id="btn-back-to-menu" class="btn btn--secondary">Back</button>
+            </div>
           </div>
         </div>
-      </div>
 
       <!--QUESTION MENU-->
       <div id="question-menu-screen" class="screen">
-        <p class="text-lg text--gradient text--glow text--center" id="current-team-name">Turn of: Team A</p>
-        <h2 class="text--white text--glow text--center text-2xl">Choose a question</h2>
+        <p class="text-xl text--gradient text--glow text-center" id="current-team-name">Turn of: Team A</p>
+        <h2 class="text--white text--glow text-center text-2xl">Choose a question</h2>
         <div class="question-grid">
           <!--tạo động danh sách câu hỏi ở đây-->
         </div>
@@ -74,7 +74,7 @@
 
             <div class="current-turn">
               <span class="current-turn__label">ACTIVE TURN</span>
-              <div id="current-turn" class="current-turn__team"></div>
+              <div id="current-turn" class="current-turn__team text--glow text--gradient"></div>
             </div>
           </div>
 
@@ -130,8 +130,8 @@
             <img class="card__image card__image--rare" src="./assets/card_change.png" alt="Card Change">
           </div>
           <div class="team-info">
-            <p class="text--gradient text--glow text-2xl text--center">YOU FOUND A RARE CARD!</p>
-            <p class="text-xl text--white text--center">Reveal it or get 5?</p>
+            <p class="text--gradient text--glow text-2xl text-center">YOU FOUND A RARE CARD!</p>
+            <p class="text-xl text--white text-center">Reveal it or get 5?</p>
           </div>
         </div>
 

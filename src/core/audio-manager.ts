@@ -1,5 +1,5 @@
 import GameDispatcher, { GameAction } from "../game-dispatcher.js";
-import { CommonSpecialCardType } from "./cards.js";
+import { CommonSpecialCardType, RareCardType } from "./cards.js";
 
 type SFXKey =
   "answer_reveal"
@@ -71,6 +71,17 @@ class AudioManager {
             this.play("card_draw");
           }
           break;
+        }
+        case "REVEAL_RARE_CARD": {
+          const card = action.payload.card;
+          console.log(card);
+          if (card.type === RareCardType.LOSE_ALL) {
+            this.play("lose_all_points");
+            return;
+          } else if (card.type === RareCardType.CHANGE) {
+            this.play("point_change");
+            return;
+          }
         }
       }
     })

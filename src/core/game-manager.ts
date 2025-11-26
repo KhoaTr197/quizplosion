@@ -161,6 +161,9 @@ class GameManager {
         case 'START_GAME':
           GameStateManager.instance.setState({ phase: GamePhase.TEAM_SETUP });
           break;
+        case 'RETURN_TO_START_MENU':
+          GameStateManager.instance.setState({ phase: GamePhase.START_MENU });
+          break;
         case 'FINISH_TEAM_SETUP': {
           const teams = action.payload.teams;
 

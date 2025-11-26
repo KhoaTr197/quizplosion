@@ -69,10 +69,10 @@ class CardDrawingScreen {
     const infoContainer = document.createElement('div');
     const activeTeam = TeamManager.instance.getActiveTeam();
     const teamNameEl = document.createElement('div');
-    teamNameEl.className = 'text--white text--glow text-xl text--center team__name';
+    teamNameEl.className = 'text--white text--glow text-xl text-center team__name';
 
     const teamScoreEl = document.createElement('div');
-    teamScoreEl.className = 'text--white text--glow text-xl text--center team__score';
+    teamScoreEl.className = 'text--white text--glow text-xl text-center team__score';
 
     if (activeTeam) {
       teamNameEl.innerHTML = `${activeTeam.name}`;

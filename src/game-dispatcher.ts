@@ -9,6 +9,7 @@ import { Team } from "./core/team-manager.js";
 export type GameAction =
   /** Bắt đầu trò chơi */
   | { type: 'START_GAME' }
+  | { type: 'RETURN_TO_START_MENU' }
   /** Thêm đội vào trò chơi */
   | { type: 'ADD_TEAM'; payload: { name: string } }
   /** Hoàn thành setup, bắt đầu chơi */

@@ -107,7 +107,7 @@ class RareCardScreen {
       const item = document.createElement('div');
       item.className = 'swap-modal__item';
       item.innerHTML = `
-        <span class="swap-modal__team-name">${team.name}</span>
+        <span class="swap-modal__team-name">${team!.name.length > 10 ? team!.name.substring(0, 10) + "..." : team!.name}</span>
         <span class="swap-modal__team-score">${team.score} pts</span>
       `;
       

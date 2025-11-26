@@ -69,10 +69,10 @@ class QuestionScreen {
       }
       else if (turnId === TeamManager.instance.getActiveTeamId()) {
         turnOrderSlot.classList.add("turn-order__slot--active");
-        this.currentTurnEl.textContent = teamInfo!.name;
+        this.currentTurnEl.textContent = teamInfo!.name.length > 10 ? teamInfo!.name.substring(0, 10) + "..." : teamInfo!.name;
       }
 
-      turnOrderSlot.textContent = teamInfo!.name.substring(teamInfo!.name.lastIndexOf(' ') + 1);
+      turnOrderSlot.textContent = teamInfo!.name.length > 10 ? teamInfo!.name.substring(0, 10) + "..." : teamInfo!.name;
 
       this.turnOrderBarEl.appendChild(turnOrderSlot);
     })
@@ -110,7 +110,7 @@ class QuestionScreen {
       else if (team.id === TeamManager.instance.getActiveTeamId())
         teamStatus.classList.add("team--active")
 
-      teamNameEl.textContent = team.name;
+      teamNameEl.textContent = team!.name.length > 8 ? team!.name.substring(0, 8) + "..." : team!.name;
       teamScoreEl.textContent = team.score.toString();
 
       teamStatus.appendChild(teamNameEl);
