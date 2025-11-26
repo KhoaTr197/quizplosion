@@ -484,11 +484,172 @@ body {
   flex-direction: column;
 }
 
+/* MinhQuan 26/11/25 STYLE */
+/* QUESTION CARD */
 .question-card {
   flex: 1;
   background: white;
   border: #000 0.3rem solid;
   margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+}
+
+.question-card__text {
+  padding: 2.5rem 3rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 0.3rem solid #000;
+  text-align: center;
+  line-height: 1.5;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.question-card__answers {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  padding: 2rem;
+  background: #fff;
+  align-content: start;
+}
+
+/* Responsive grid for different number of answers */
+.question-card__answers:has(.answer-option:nth-child(1):last-child),
+.question-card__answers:has(.answer-item:nth-child(1):last-child) {
+  grid-template-columns: 1fr;
+  max-width: 60%;
+  margin: 0 auto;
+}
+
+.question-card__answers:has(.answer-option:nth-child(3):last-child),
+.question-card__answers:has(.answer-item:nth-child(3):last-child) {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.answer-option {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 0.3rem solid #333;
+  border-radius: 0.8rem;
+  padding: 1.5rem 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  cursor: pointer;
+  transition: all ease 0.3s;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.answer-label {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-clr);
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+}
+
+.answer-text {
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.answer-option::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(248, 220, 49, 0.1) 0%,
+    rgba(241, 95, 41, 0.1) 100%
+  );
+  opacity: 0;
+  transition: opacity ease 0.3s;
+}
+
+.answer-option:hover,
+.answer-item:hover {
+  transform: translateY(-5px) scale(1.02);
+}
+
+.answer-option:hover::before {
+  opacity: 1;
+}
+
+.answer-option:active {
+  transform: translateY(-2px) scale(0.98);
+  transition: all ease 0.1s;
+}
+
+/* Hỗ trợ việc pre-render cho phần tử có class answer-item
+(sử dụng trong new-question-screen.ts để preview CSS). */
+.answer-item {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 0.3rem solid #333;
+  border-radius: 0.8rem;
+  padding: 1.5rem 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  cursor: pointer;
+  transition: all ease 0.3s;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.answer-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(248, 220, 49, 0.1) 0%,
+    rgba(241, 95, 41, 0.1) 100%
+  );
+  opacity: 0;
+  transition: opacity ease 0.3s;
+}
+
+.answer-item:active {
+  transform: translateY(-2px) scale(0.98);
+  transition: all ease 0.1s;
+}
+
+.question-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  position: relative;
 }
 
 .question-actions .action-btn {
