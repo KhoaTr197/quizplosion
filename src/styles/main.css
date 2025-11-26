@@ -276,6 +276,89 @@ body {
   }
 }
 
+/* MinhQuan 25/11/25 STYLES */
+/* START MENU SCREEN */
+
+#start-menu-screen {
+  height: 100%;
+  width: 100%;
+}
+
+.menu-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  min-width: 300px;
+}
+
+.menu-button {
+  width: 100%;
+  max-width: 350px;
+  padding: 1.2rem 2.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    var(--primary-clr) 0%,
+    var(--accent-clr) 100%
+  );
+  border: 0.3rem solid #000;
+  border-radius: 0.8rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3),
+    0 0 0.5rem rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all ease 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left ease 0.5s;
+}
+
+.menu-button:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.4), 0 0 1rem var(--secondary-clr),
+    0 0 1.5rem var(--secondary-clr);
+  background: linear-gradient(
+    135deg,
+    var(--secondary-clr) 0%,
+    var(--primary-clr) 100%
+  );
+}
+
+.menu-button:hover::before {
+  left: 100%;
+}
+
+.menu-button:active {
+  transform: translateY(-1px) scale(0.98);
+  transition: all ease 0.1s;
+}
+
 /* NEW QUESTION SCREEN */
 #new-question-screen {
   height: 100%;
