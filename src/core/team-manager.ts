@@ -5,6 +5,8 @@ export interface Team {
   name: string;
   /** Điểm số hiện tại của đội */
   score: number;
+  /** Đã nổ chưa */
+  isBombed: boolean;
 }
 
 /**
@@ -76,6 +78,7 @@ class TeamManager {
         id: i + 1,
         name: t.name.trim() || `Team ${i + 1}`,
         score: 0,
+        isBombed: false
       };
 
       /** Thêm vào Map ngay lập tức */
@@ -110,7 +113,13 @@ class TeamManager {
 
     for (let i = 1; i < len; i++) {
       const idx = (this.currentTurnIndex + i) % len;
-      this.stealQueue.push(this.turnOrder[idx]);
+
+      const teamId = this.turnOrder[idx];
+
+      // CHỈ THÊM VÀO HÀNG ĐỢI NẾU KHÔNG BỊ BOMB
+      if (!this.isTeamBombed(teamId)) {
+        this.stealQueue.push(teamId);
+      }
     }
   }
 
@@ -120,26 +129,53 @@ class TeamManager {
    * @param type Loại cập nhật: 'add' (cộng), 'set' (gán), 'multiply' (nhân), 'divide' (chia)
    * @param value Giá trị để cập nhật
    */
-  public updateScore(teamId: number, type: 'add' | 'set' | 'multiple' | 'divide', value: number): void {
+  public updateScore(teamId: number, type: string, value: number): void {
     const team = this.teams.find(t => t.id === teamId);
     if (!team) return;
 
-    switch (type) {
-      case 'add':
+    // Nếu đội đã bị bomb thì điểm luôn là 0, không cho update
+    if (team.isBombed) {
+      team.score = 0;
+      return;
+    }
+
+    switch (true) {
+      case type.startsWith('plus'):
         team.score += value;
         break;
-      case 'set':
-        team.score = value; // Dùng cho thẻ Lose All (set về 0) hoặc Swap
+      case type == 'set':
+        team.score = value; // Dùng cho thẻ Lose All hoặc Swap
         break;
-      case 'multiple':
-        team.score *= value;
+      case type.startsWith('multiple'):
+        team.score *= value == 0 ? 2 : value;
         break;
-      case 'divide':
-        team.score = Math.floor(team.score / value);
+      case type.startsWith('divide'):
+        team.score = Math.floor(team.score / (value == 0 ? 2 : value));
         break;
     }
     // Đảm bảo điểm không âm
     if (team.score < 0) team.score = 0;
+    console.log("ĐIỂM SAU UPDATE: ", team.score);
+  }
+
+  public triggerBomb(teamId: number): void {
+    const team = this.getTeamById(teamId);
+    if (!team) return;
+
+    team.isBombed = true;
+    team.score = 0;
+    console.log(`💥 ${team.name} NỔ! 💥`);
+
+    // Nếu team hiện tại bị bom thì chuyển sang lượt hợp lệ kế tiếp
+    if (this.getCurrentTeam()?.id === teamId) {
+      this.advanceToNextValidTurn();
+    }
+    this.prepareStealQueue();
+  }
+
+  public triggerNuclear(): void {
+    this.teams.forEach(team => (team.score = 0));
+    console.log("☢️ NUCLEAR! Tất cả điểm RESET! ☢️");
   }
 
   /**
@@ -213,9 +249,18 @@ class TeamManager {
    * Dùng khi kết thúc hoàn toàn một câu hỏi (sau khi đã xử lý xong việc cướp lượt nếu có)
    */
   public nextTurn(): void {
+    this.advanceToNextValidTurn();
+  }
+
+  private advanceToNextValidTurn(): void {
     if (this.turnOrder.length === 0) return;
 
-    this.currentTurnIndex = (this.currentTurnIndex + 1) % this.turnOrder.length;
+    let attempts = 0;
+    do {
+      this.currentTurnIndex = (this.currentTurnIndex + 1) % this.turnOrder.length;
+      attempts++;
+    } while (this.isTeamBombed(this.turnOrder[this.currentTurnIndex]) && attempts < this.turnOrder.length);
+
     this.prepareStealQueue();
   }
 
@@ -229,11 +274,18 @@ class TeamManager {
     // Tìm index của team vừa cướp để set currentTurnIndex
     const idx = this.turnOrder.indexOf(nextTeamId);
 
-    console.log(this.currentTurnIndex, nextTeamId, this.stealQueue)
-
     if (idx !== -1) this.currentTurnIndex = idx;
 
+    this.prepareStealQueue();
     return true;
+  }
+
+  /**
+   * Kiểm tra xem đội có bị loại (bombed) không
+   */
+  private isTeamBombed(teamId: number): boolean {
+    const team = this.getTeamById(teamId);
+    return team ? team.isBombed : false;
   }
 
   /**
@@ -256,12 +308,14 @@ class TeamManager {
    * Debug: In ra bộ bài vừa tạo
    */
   public logCurrentTeamSession(): void {
-    console.log('Main Order:', this.turnOrder.map(id => this.getTeamById(id)?.name).join(' → '));
+    console.log('Main Order:', this.turnOrder.map(id => {
+      const t = this.getTeamById(id);
+      return t?.isBombed ? `[${t.name} - BOMB]` : t?.name;
+    }).join(' -> '));
     console.log('Current Main Index:', this.currentTurnIndex);
     console.log('Active Team:', this.getCurrentTeam()?.name);
     console.log('Steal Queue:', this.stealQueue.map(id => this.getTeamById(id)?.name).join(' → '));
-    console.log('Scores:', this.teams.map(t => `${t.name}: ${t.score}`).join(' | '));
-    console.log('---');
+    console.log('Scores:', this.teams.map(t => `${t.name}: ${t.score} ${t.isBombed ? '(BOMB)' : ''}`).join(' | '));
   }
 }
 

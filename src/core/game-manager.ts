@@ -138,6 +138,7 @@ class GameManager {
       [GamePhase.STEAL_QUESTION]: ScreenId.QUESTION,
       [GamePhase.REVEALING_ANSWER]: ScreenId.QUESTION,
       [GamePhase.COMMON_CARD_DRAWING]: ScreenId.COMMON_CARD_DRAWING,
+      [GamePhase.CARD_REVEALED]: ScreenId.COMMON_CARD_DRAWING,
       [GamePhase.RARE_CARD_DECISION]: ScreenId.RARE_CARD,
     };
     return map[phase] || ScreenId.START_MENU;
@@ -223,6 +224,25 @@ class GameManager {
             phase: GamePhase.COMMON_CARD_DRAWING,
           })
           break;
+        case 'DRAW_NEXT_CARD':
+          const currentTeam = TeamManager.instance.getCurrentTeam()!;
+          const card = action.payload.card;
+          if (card.type == 'bomb') {
+            console.log("bomb");
+            TeamManager.instance.triggerBomb(currentTeam.id);
+          }
+          else if (card.type == 'nuclear') {
+            console.log("nuclear");
+            TeamManager.instance.triggerNuclear();
+          }
+          else {
+            TeamManager.instance.updateScore(currentTeam.id, card.type, this.extractNumber(card.type));
+          }
+
+          GameStateManager.instance.setState({
+            phase: GamePhase.CARD_REVEALED,
+          })
+          break;
         case 'SHOW_RARE_CARD_SCREEN':
           GameStateManager.instance.setState({
             phase: GamePhase.RARE_CARD_DECISION,
@@ -238,6 +258,10 @@ class GameManager {
       const state = GameStateManager.instance.getState();
       this.renderPhase(state.phase, state);
     });
+  }
+  public extractNumber(str: string): number {
+    const match = str.match(/\d+/); // Tìm cụm số đầu tiên
+    return match ? parseInt(match[0]) : 0; // Nếu không thấy số thì trả về 0
   }
 }
 export default GameManager;

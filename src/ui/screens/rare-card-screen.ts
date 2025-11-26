@@ -24,19 +24,20 @@ class RareCardScreen {
 
       img.src = card.metadata.img.src;
       img.alt = card.metadata.img.alt;
-      if (card.type === PlaceholderCardType.PLACEHOLDER){
+      if (card.type === PlaceholderCardType.PLACEHOLDER) {
         img.classList.add('card__image');
         img.classList.add('card__image--back');
         img.onclick = () => {
           img.classList.add('card__image--hide');
-          //deck.draw();
+          const card = deck.draw();
+          console.log(card);
         }
       }
       else {
         img.classList.add('card__image');
         img.classList.add('card__image--rare');
       }
-          
+
       this.rareCardContainer.appendChild(img);
     })
   }

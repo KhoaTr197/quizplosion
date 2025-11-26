@@ -102,7 +102,7 @@ body {
   content: "";
   position: absolute;
   inset: -10rem -14rem;
-  background: url("../assets/glow.png") center / 140% no-repeat;
+  background: url("../../assets/glow.png") center / 140% no-repeat;
   z-index: -100;
 
   animation: spin-glow 10s linear infinite;
@@ -114,6 +114,10 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+.turn-order__slot--bombed,
+.team--bombed {
+  opacity: 0.4;
 }
 .card__image {
   position: absolute;
@@ -216,7 +220,7 @@ body {
   }
 }
 
-/* NEW QUESTION SCREEN */
+/* QUESTION SCREEN */
 #question-screen {
   height: 100%;
 }
