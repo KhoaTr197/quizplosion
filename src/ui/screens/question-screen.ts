@@ -195,6 +195,7 @@ class QuestionScreen {
 this.closeQuestionBtn.disabled=true
         this.skipTurnBtn.disabled=true
         this.revealCorrectAnswers();
+        this.nextQuestionBtn.textContent="Draw Card";
 
         GameDispatcher.instance.dispatch({
           type: 'REVEAL_CORRECT_ANSWER',
@@ -204,7 +205,9 @@ this.closeQuestionBtn.disabled=true
       
       else if (phase === GamePhase.REVEALING_ANSWER) {
          this.closeQuestionBtn.disabled=false;
-        this.skipTurnBtn.disabled=false;
+        this.skipTurnBtn.disabled=false;    
+            this.nextQuestionBtn.textContent="Show Answer";
+
         if (DeckManager.instance.type == 'Rare') {
           GameDispatcher.instance.dispatch({
             type: 'SHOW_RARE_CARD_SCREEN',
