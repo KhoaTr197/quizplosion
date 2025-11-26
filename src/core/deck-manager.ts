@@ -69,6 +69,7 @@ class DeckManager {
     // Thuật toán random loại deck
 
     this.deckType = randomRareCard_Percentage(state.answeredQuestionIds.length);
+    //this.deckType = 'Rare';
 
     // Generate bộ bài theo loại
     this.generateDeckByType(this.deckType);

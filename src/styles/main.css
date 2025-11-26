@@ -529,3 +529,72 @@ color: rgb(255, 163, 4);
       transparent calc(50% + 1px)
     );
 }
+/* SWAP TEAM MODAL */
+.swap-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  width: 500px;
+  max-width: 90%;
+  background: #162133; /* Màu nền giống các bảng khác */
+  border: 3px solid var(--secondary-clr);
+  border-radius: 1rem;
+  padding: 2rem;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(248, 220, 49, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Class kích hoạt hiển thị */
+.swap-modal--active {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.swap-modal__title {
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.swap-modal__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Style cho từng item team trong list - Tận dụng style của button nhưng chỉnh lại */
+.swap-modal__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #363e51;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.swap-modal__item:hover {
+  background: var(--accent-clr);
+  border-color: var(--secondary-clr);
+  transform: translateX(10px);
+  box-shadow: 0 0 15px rgba(137, 17, 15, 0.5);
+}
+
+.swap-modal__team-score {
+  font-weight: bold;
+  color: var(--secondary-clr);
+}

@@ -293,10 +293,10 @@ class GameManager {
             const activeTeamId = activeTeam.id;
             if(action.payload.card.type == 'lose_all'){
               console.log('lose all');
-              
+              TeamManager.instance.updateScore(activeTeam.id, 'set', 0);
             } else {
               console.log('change');
-
+              
             }
           }
           
