@@ -43,6 +43,11 @@ class TeamManager {
   constructor() {
     this.reset();
   }
+  public test(): void {
+    this.teams.forEach((t, idx)=>{
+      t.score += idx * 2;
+    });
+  }
 
   /**
    * Lấy instance duy nhất của TeamManager (Singleton)
@@ -186,6 +191,11 @@ class TeamManager {
     // Đảm bảo điểm không âm
     if (team.score < 0) team.score = 0;
     console.log("ĐIỂM SAU UPDATE: ", team.score);
+  }
+  public swapScores(currentTeamId: Team["id"], targetTeamId: Team["id"]): void {
+    const tempScore = structuredClone(this.teamMap.get(currentTeamId)?.score);
+    this.updateScore(currentTeamId, 'set', this.teamMap.get(targetTeamId)?.score!);
+    this.updateScore(targetTeamId, 'set', tempScore!);
   }
 
   public triggerBomb(teamId: number): void {

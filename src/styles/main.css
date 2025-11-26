@@ -570,6 +570,7 @@ color: rgb(255, 163, 4);
   gap: 1rem;
   max-height: 300px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Style cho từng item team trong list - Tận dụng style của button nhưng chỉnh lại */
@@ -590,13 +591,13 @@ color: rgb(255, 163, 4);
 .swap-modal__item:hover {
   background: var(--accent-clr);
   border-color: var(--secondary-clr);
-  transform: translateX(10px);
   box-shadow: 0 0 15px rgba(137, 17, 15, 0.5);
 }
 
 .swap-modal__team-score {
   font-weight: bold;
   color: var(--secondary-clr);
+}
 /* ====================== BẢNG XẾP HẠNG - HUY CHƯƠNG VINH DANH ====================== */
 #ranking-screen {
   min-height: 100vh;

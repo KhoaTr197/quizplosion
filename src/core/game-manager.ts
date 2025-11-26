@@ -169,6 +169,7 @@ class GameManager {
           
           //TeamManager.instance.shuffleOrders();
           TeamManager.instance.logCurrentTeamSession();
+          TeamManager.instance.test();
 
           GameStateManager.instance.setState({
             phase: GamePhase.QUESTION_MENU,

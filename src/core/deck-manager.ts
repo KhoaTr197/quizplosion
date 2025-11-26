@@ -174,6 +174,7 @@ class DeckManager {
       this.deck.push(backCard);
       const percentRareCard = Math.random();
       let RareCard: RareCardType = percentRareCard >= 0.6 ? RareCardType.CHANGE : RareCardType.LOSE_ALL;
+      //let RareCard: RareCardType = percentRareCard >= 0 ? RareCardType.CHANGE : RareCardType.LOSE_ALL;
       const info = RARE_CARD_INFO[RareCard];
       this.deck.push({
         id: `${RareCard}_${Date.now()}_${1}`,

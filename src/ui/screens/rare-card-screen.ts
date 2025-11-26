@@ -13,6 +13,7 @@ class RareCardScreen {
   private screenContainer = document.querySelector('#rare-card-screen') as HTMLElement;
 
   constructor() {
+    this.resetUI();
     this.bindEvents();
   }
 
@@ -132,8 +133,7 @@ class RareCardScreen {
   private handleSwapSelection(currentTeamId: Team["id"], targetTeamId: Team["id"]): void {
      console.log(`Swapping score between ${currentTeamId} and ${targetTeamId}`);
      
-     // Gọi logic đổi điểm trong TeamManager
-     // TeamManager.instance.swapScores(currentTeamId, targetTeamId); 
+     TeamManager.instance.swapScores(currentTeamId, targetTeamId); 
 
      // Sau khi chọn xong, quay về menu
      GameDispatcher.instance.dispatch({
