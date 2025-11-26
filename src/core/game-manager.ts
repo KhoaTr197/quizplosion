@@ -244,6 +244,24 @@ class GameManager {
             phase: GamePhase.RARE_CARD_DECISION,
           })
           break;
+        case 'REVEAL_RARE_CARD':
+          const activeTeam = TeamManager.instance.getActiveTeam();
+          if(activeTeam){
+            const activeTeamId = activeTeam.id;
+            if(action.payload.card.type == 'lose_all'){
+              console.log('lose all');
+              
+            } else {
+              console.log('change');
+
+            }
+          }
+          
+          GameStateManager.instance.setState({
+            phase: GamePhase.RARE_CARD_DECISION,
+            
+          })
+          break;
         case 'RESET_GAME':
           GameStateManager.clearSave();
           break;

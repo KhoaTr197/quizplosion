@@ -68,14 +68,14 @@ class DeckManager {
 
     // TODO: Thêm thuật toán random loại deck
 
-    this.deckType = randomRareCard_Percentage(state.answeredQuestionIds.length);
+    // this.deckType = randomRareCard_Percentage(state.answeredQuestionIds.length);
 
-    //Generate bộ bài theo loại
-    this.generateDeckByType(this.deckType);
-
-    // //test rare
-    // this.deckType = 'Rare';
+    // //Generate bộ bài theo loại
     // this.generateDeckByType(this.deckType);
+
+    //test rare
+    this.deckType = 'Rare';
+    this.generateDeckByType(this.deckType);
   }
   /**
    * Chọn ngẫu nhiên một lá điểm theo tỷ lệ trọng số

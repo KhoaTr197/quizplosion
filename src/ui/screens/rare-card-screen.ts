@@ -1,5 +1,6 @@
 import { PlaceholderCardType } from "../../core/cards.js";
 import DeckManager from "../../core/deck-manager.js";
+import TeamManager from "../../core/team-manager.js";
 import GameDispatcher from "../../game-dispatcher.js";
 
 /**
@@ -28,9 +29,16 @@ class RareCardScreen {
         img.classList.add('card__image');
         img.classList.add('card__image--back');
         img.onclick = () => {
+          img.style.pointerEvents = 'none';
           img.classList.add('card__image--hide');
           const card = deck.draw();
           console.log(card);
+          GameDispatcher.instance.dispatch({
+            type: "REVEAL_RARE_CARD",
+            payload: {
+              card: card!,
+            }
+          })
         }
       }
       else {
@@ -44,6 +52,11 @@ class RareCardScreen {
 
   public bindEvents(): void {
     this.questionMenuBtn.onclick = () => {
+      const rareCardHideEl = document.querySelector('.card__image.card__image--hide');
+      if(!rareCardHideEl) {
+        const activeTeamId = TeamManager.instance.getActiveTeamId();
+        TeamManager.instance.updateScore(activeTeamId, 'plus', 5);
+      }
       GameDispatcher.instance.dispatch({
         type: "RETURN_TO_QUESTION_MENU",
       })
