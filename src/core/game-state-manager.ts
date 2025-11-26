@@ -1,5 +1,5 @@
 import { Card } from "./cards.js";
-import { Team } from "./team-manager.js";
+import TeamManager, { Team } from "./team-manager.js";
 
 /**
  * Các giai đoạn (phase) chính của trò chơi
@@ -97,6 +97,14 @@ class GameStateManager {
         console.warn('Phiên bản save cũ → reset game');
         return null;
       }
+
+      // Load data lên các manager
+      TeamManager.instance.restore({
+        teams: saved.teams!,
+        turnOrder: saved.turnOrder!,
+        currentTurnIndex: saved.currentTurnIndex!,
+        stealQueue: saved.stealQueue!
+      })
 
       return saved;
     } catch (err) {

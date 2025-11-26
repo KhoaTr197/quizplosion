@@ -237,6 +237,22 @@ class TeamManager {
   }
 
   /**
+   * Khôi phục state (GameState)
+   */
+  public restore(data: {
+    teams: Team[],
+    turnOrder: number[],
+    currentTurnIndex: number,
+    stealQueue: number[]
+  }): void {
+    this.teams = data.teams;
+    this.turnOrder = data.turnOrder;
+    this.currentTurnIndex = data.currentTurnIndex;
+    this.stealQueue = data.stealQueue;
+    this.teamMap = new Map(this.teams.map(t => [t.id, t]));
+  }
+
+  /**
    * Debug: In ra bộ bài vừa tạo
    */
   public logCurrentTeamSession(): void {
